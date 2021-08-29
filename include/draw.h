@@ -88,11 +88,11 @@ private:
      */
     int get_glyph_index(uint32_t cp);
 
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    SDL_Texture* main_target;
-    SDL_Texture* overlay_target;
-    Texture* kfonts;
-    Texture* misc;
-    Raster* menuptr;
+    SDL_Window* window = NULL;
+    SDL_Renderer* renderer = NULL;
+    SDL_Texture* main_target = NULL;
+    SDL_Texture* overlay_target = NULL;
+    Texture* kfonts = NULL;
+    Texture* misc = NULL;
+    Raster* menuptr = NULL;
 };

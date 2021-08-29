@@ -32,7 +32,7 @@ static uint32_t glyph_lookup[][2] = {
 bool should_stretch_view = true, windowed = true;
 
 bool KDraw::init(void) {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
         return false;
     }

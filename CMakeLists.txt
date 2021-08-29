@@ -66,7 +66,7 @@ set(kq-fork-sources
 	#src/menu.cpp
 	#src/movement.cpp
 	#src/music_dumb.cpp
-  #src/music.cpp
+  src/music.cpp
 	#src/player.cpp
 	src/random.cpp
   #src/res.cpp
@@ -75,7 +75,7 @@ set(kq-fork-sources
 	#src/sgame.cpp
 	#src/shopmenu.cpp
 	#src/timing.cpp
-  #src/unix.cpp
+  src/unix.cpp
 	#src/tiledmap.cpp
 )
 
@@ -93,6 +93,7 @@ add_executable(kq-fork ${kq-fork-sources})
 target_link_libraries(kq-fork
   SDL2
   SDL2_image
+  SDL2_mixer
   #${ALLEGRO_LIBRARIES}
 	#${LUA_LIBRARY}
 	#${AL_DUMB_LIBRARIES}

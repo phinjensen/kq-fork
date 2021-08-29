@@ -29,11 +29,11 @@
  * e.g. Linux
  */
 
-#include <allegro.h>
 #include <cstdio>
 #include <cstring>
 #include <pwd.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "platform.h"
 
@@ -41,6 +41,11 @@ static bool init_path = false;
 static string user_dir;
 static string data_dir;
 static string lib_dir;
+
+bool exists(const string& name) {
+    struct stat buffer;
+    return (stat(name.c_str(), &buffer) == 0);
+}
 
 /*! \brief Returns the full path for this file
  *
@@ -54,16 +59,15 @@ static string lib_dir;
  * \param file The filename
  * \returns the combined path
  */
-const string get_resource_file_path(const string str1, const string str2, const string file)
-{
+const string get_resource_file_path(const string str1, const string str2, const string file) {
     string slash("/");
     string tail = str2.empty() ? slash + file : slash + str2 + slash + file;
     string ans = user_dir + tail;
 
-    if (!exists(ans.c_str()))
-    {
+    if (!exists(ans.c_str())) {
         ans = str1 + tail;
     }
+
     return ans;
 }
 
@@ -82,27 +86,23 @@ const string get_resource_file_path(const string str1, const string str2, const 
  * \param file The filename
  * \returns the combined path
  */
-const string get_lua_file_path(const string str1, const string file)
-{
+const string get_lua_file_path(const string str1, const string file) {
     string ans;
     string scripts("/scripts/");
     string lob(".lob");
     string lua(".lua");
     ans = user_dir + scripts + file + lob;
-    if (!exists(ans.c_str()))
-    {
+
+    if (!exists(ans.c_str())) {
         ans = user_dir + scripts + file + lua;
 
-        if (!exists(ans.c_str()))
-        {
+        if (!exists(ans.c_str())) {
             ans = str1 + scripts + file + lob;
 
-            if (!exists(ans.c_str()))
-            {
+            if (!exists(ans.c_str())) {
                 ans = str1 + scripts + file + lua;
 
-                if (!exists(ans.c_str()))
-                {
+                if (!exists(ans.c_str())) {
                     return string();
                 }
             }
@@ -122,60 +122,59 @@ const string get_lua_file_path(const string str1, const string file)
  * \param   file File name below that directory.
  * \returns the combined path
  */
-const string kqres(enum eDirectories dir, const string file)
-{
+const string kqres(enum eDirectories dir, const string file) {
     char exe[2048];
 
-    if (!init_path)
-    {
+    if (!init_path) {
         /* Get home directory; this bit originally written by SH */
         struct passwd* pwd;
         char* home = getenv("HOME");
 
-        if (home == NULL)
-        {
+        if (home == NULL) {
             /* Try looking in password file for home dir. */
-            if ((pwd = getpwuid(getuid())))
-            {
+            if ((pwd = getpwuid(getuid()))) {
                 home = pwd->pw_dir;
             }
         }
 
         /* Do not get fooled by a corrupted $HOME */
-        if (home != NULL && strlen(home) < 2048)
-        {
+        if (home != NULL && strlen(home) < 2048) {
             user_dir = string(home) + string("/.kq");
             /* Always try to make the directory, just to be sure. */
             mkdir(user_dir.c_str(), 0755);
-        }
-        else
-        {
+        } else {
             user_dir = string(".");
         }
+
         /* Now the data directory */
-        get_executable_name(exe, sizeof(exe));
+        //TODO: get_executable_name(exe, sizeof(exe));
         /* Not installed, development version */
         data_dir = lib_dir = string(".");
         init_path = true;
     }
-    switch (dir)
-    {
+
+    switch (dir) {
     case DATA_DIR:
         return get_resource_file_path(data_dir, "data", file);
         break;
+
     case MUSIC_DIR:
         return get_resource_file_path(data_dir, "music", file);
         break;
+
     case MAP_DIR:
         return get_resource_file_path(data_dir, "maps", file);
         break;
+
     case SAVE_DIR:
     case SETTINGS_DIR:
         return get_resource_file_path(user_dir, "", file);
         break;
+
     case SCRIPT_DIR:
         return get_lua_file_path(lib_dir, file);
         break;
+
     default:
         return NULL;
     }

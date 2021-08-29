@@ -30,137 +30,67 @@
 #include <cstring>
 #include <string>
 
-#include "kq.h"
+#include "gettext.h"
 #include "music.h"
 #include "platform.h"
 
-/* DUMB version of music */
-#include <aldumb.h>
-
-/* private variables */
-#define MAX_MUSIC_PLAYERS 3
-static DUH* mod_song[MAX_MUSIC_PLAYERS];
-static AL_DUH_PLAYER* mod_player[MAX_MUSIC_PLAYERS];
-static int current_music_player;
-
-/*! \brief Initiate music player (DUMB)
+/*! \brief Initiate music player
  *
- * Initializes the music players. Must be called before any other
+ * Initializes SDL_mixer. Must be called before any other
  * music function. Needs to be shutdown when finished.
  */
-void KMusic::init_music(void)
-{
-    atexit(&dumb_exit);
-    dumb_register_stdfiles();
-    dumb_resampling_quality = 2;
-
-    /* initialize all music players */
-    current_music_player = MAX_MUSIC_PLAYERS;
-    while (current_music_player--)
-    {
-        mod_song[current_music_player] = NULL;
-        mod_player[current_music_player] = NULL;
+bool KMusic::init_music(void) {
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+        return false;
     }
-    current_music_player = 0;
+
+    return true;
 }
 
-/*! \brief Clean up and shut down music (DUMB)
+/*! \brief Clean up and shut down music
  *
  * Performs any cleanup needed. Must be called before the program exits.
  */
-void KMusic::shutdown_music(void)
-{
-    if (is_sound != 0)
-    {
-        do
-        {
-            stop_music();
-        } while (current_music_player--);
-    }
+void KMusic::shutdown_music(void) {
+    // TODO: Shutdown music
 }
 
-/*! \brief Set the music volume (DUMB)
+/*! \brief Set the music volume
  *
  * Sets the volume of the currently playing music.
  *
  * \param   volume 0 (silent) to 100 (loudest)
  */
-void KMusic::set_music_volume(float volume)
-{
-    if (is_sound != 0 && mod_player[current_music_player])
-    {
-        al_duh_set_volume(mod_player[current_music_player], volume);
-    }
+void KMusic::set_music_volume(float volume) {
+    // TODO: set volume (needs to handle sound effects vs. musi
 }
 
-/*! \brief Poll the music (DUMB)
+/*! \brief Play a specific song
  *
- * Does whatever is needed to ensure the music keeps playing.
- * It's safe to call this too much, but shouldn't be called inside a timer.
- */
-void KMusic::poll_music(void)
-{
-    if (is_sound != 0)
-    {
-        al_poll_duh(mod_player[current_music_player]);
-    }
-}
-
-/*! \brief Play a specific song (DUMB)
- *
- * This will stop any currently played song, and then play
- * the requested song.  Based on the extension given, the appropriate player
- * is called.
+ * This will stop any currently played song, and then play the requested
+ * song. Based on the extension given, the appropriate player is called.
  *
  * \param   music_name The relative filename of the song to be played
- * \param   position The position of the file to begin at
  */
-void KMusic::play_music(const std::string& music_name, long position)
-{
-    if (is_sound != 0)
-    {
-        const std::string fstr = kqres(MUSIC_DIR, music_name);
-        const char* filename = fstr.c_str();
+void KMusic::play_music(const std::string& music_name) {
+    const std::string filename = kqres(MUSIC_DIR, music_name);
 
-        stop_music();
-        if (exists(filename))
-        {
-            if (strstr(filename, ".mod"))
-            {
-                mod_song[current_music_player] = dumb_load_mod(filename);
-            }
+    stop_music();
 
-            else if (strstr(filename, ".xm"))
-            {
-                mod_song[current_music_player] = dumb_load_xm(filename);
-            }
+    if (exists(filename)) {
+        current_song = Mix_LoadMUS(filename.c_str());
 
-            else if (strstr(filename, ".s3m"))
-            {
-                mod_song[current_music_player] = dumb_load_s3m(filename);
-            }
-
-            else
-            {
-                mod_song[current_music_player] = NULL;
-            }
-            if (mod_song[current_music_player])
-            {
-                /* ML: we should (?) adjust the buffer size after everything is running
-                 * smooth */
-                float vol = float(gmvol) / 250.0f;
-                mod_player[current_music_player] =
-                    al_start_duh(mod_song[current_music_player], 2, position, vol, 4096 * 4, 44100);
-            }
-            else
-            {
-                TRACE(_("Could not load %s!\n"), filename);
-            }
+        if (current_song) {
+            /* ML: we should (?) adjust the buffer size after everything is running
+             * smooth */
+            Mix_PlayMusic(current_song, -1);
+        } else {
+            printf(gettext("Could not load %s!\n"), filename.c_str());
         }
-        else
-        {
-            mod_song[current_music_player] = NULL;
-        }
+    } else {
+        printf(gettext("Could not load %s!\n"), filename.c_str());
+        current_song = NULL;
     }
 }
 
@@ -170,52 +100,27 @@ void KMusic::play_music(const std::string& music_name, long position)
  * must call play_music(), as the current music player will no longer
  * be available and the song unloaded from memory.
  */
-void KMusic::stop_music(void)
-{
-    if (is_sound != 0 && mod_player[current_music_player])
-    {
-        al_stop_duh(mod_player[current_music_player]);
-        unload_duh(mod_song[current_music_player]);
-        mod_player[current_music_player] = NULL;
-        mod_song[current_music_player] = NULL;
-    }
+void KMusic::stop_music(void) {
+    Mix_HaltMusic();
+    Mix_FreeMusic(current_song);
+    current_song = NULL;
 }
 
-/*! \brief Pauses the current music file (DUMB)
+/*! \brief Pauses the current music file
  *
  * Pauses the currently playing music file. It may be resumed
  * by calling resume_music(). Pausing the music file may be used
  * to nest music (such as during a battle).
  */
-void KMusic::pause_music(void)
-{
-    if (is_sound != 0)
-    {
-        if (current_music_player < MAX_MUSIC_PLAYERS - 1)
-        {
-            al_pause_duh(mod_player[current_music_player]);
-            current_music_player++;
-        }
-        else
-        {
-            TRACE(_("reached maximum levels of music pauses!\n"));
-        }
-    }
+void KMusic::pause_music(void) {
+    Mix_PauseMusic();
 }
 
-/*! \brief Resume paused music (DUMB)
+/*! \brief Resume paused music
  *
  * Resumes the most recently paused music file. If a call to
  * play_music() was made in between, that file will be stopped.
  */
-void KMusic::resume_music(void)
-{
-    if (is_sound != 0 && current_music_player > 0)
-    {
-        stop_music();
-        current_music_player--;
-        al_resume_duh(mod_player[current_music_player]);
-    }
+void KMusic::resume_music(void) {
+    Mix_ResumeMusic();
 }
-
-KMusic Music;

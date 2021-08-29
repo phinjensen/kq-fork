@@ -14,7 +14,7 @@
 KGame game;
 
 int main(int argc, const char* argv[]) {
-    bool stop, game_on, skip_splash;
+    bool game_on, skip_splash;
     size_t i;
 
     setlocale(LC_ALL, "");

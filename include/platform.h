@@ -30,8 +30,7 @@
 #include <string>
 using std::string;
 
-enum eDirectories
-{
+enum eDirectories {
     DATA_DIR = 0,
     MAP_DIR = 1,
     SAVE_DIR = 2,
@@ -39,6 +38,8 @@ enum eDirectories
     SCRIPT_DIR = 4,
     SETTINGS_DIR = 5,
 };
+
+bool exists(const string& name);
 
 /* Get the directory for application data (music, gfx, etc.)
    or user data (screenshots, prefs, saved games)
