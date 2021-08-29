@@ -21,11 +21,24 @@
 
 #pragma once
 
+#include <map>
 #include <string>
 
 #include <SDL2/SDL_mixer.h>
 
 using std::string;
+
+enum eSoundEffect {
+    MENU,
+    CLICK,
+    BAD,
+    ITEM,
+    EQUIP,
+    UNEQUIP,
+    MONEY,
+    TWINKLE,
+    EXPLODE,
+};
 
 class KMusic {
 public:
@@ -39,8 +52,11 @@ public:
     void resume_music(void);
     void stop_music(void);
 
+    void play_effect(std::string effect);
+
 private:
     Mix_Music* current_song;
+    std::map<std::string, Mix_Chunk*> effects;
 };
 
 extern KMusic music;

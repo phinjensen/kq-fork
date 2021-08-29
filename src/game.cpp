@@ -14,7 +14,7 @@ SDL_Texture* overlay_target = NULL;
 Texture *kfonts = NULL, *misc = NULL;
 Raster *menuptr = NULL;
 
-bool should_stretch_view = true, windowed = true;
+bool should_stretch_view = true, windowed = false;
 
 const uint8_t DARKBLUE = 0,
               BLUE = 2,
@@ -125,7 +125,7 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
                 ptr = 3;
             }
 
-            //TODO: Sound effects: play_effect(SND_CLICK, 128);
+            music.play_effect("menumove");
             redraw = 1;
         }
 
@@ -138,7 +138,7 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
                 ptr = 0;
             }
 
-            //TODO: play_effect(SND_CLICK, 128);
+            music.play_effect("menumove");
             redraw = 1;
         }
 

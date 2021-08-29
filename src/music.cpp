@@ -28,11 +28,36 @@
 
 #include <cstdio>
 #include <cstring>
-#include <string>
+#include <iostream>
+#include <stdexcept>
 
 #include "gettext.h"
 #include "music.h"
 #include "platform.h"
+
+#define NUM_EFFECTS 43
+const std::string SOUND_BAD = "bad";
+const std::string SOUND_EXPLODE = "explode";
+
+const std::string effect_names[NUM_EFFECTS] = {
+    "arrow",
+    "bad", "black", "blind", "bmagic", "bolt1", "bolt2", "bolt3", "buysell",
+    "chop", "confuse", "cure",
+    "deequip", "dispel", "doom", "door2", "dooropen", "drain",
+    "equip", "explode",
+    "flame", "flood",
+    "gas",
+    "hit", "hurt",
+    "ice", "inn", "item",
+    "kill",
+    "menumove",
+    "poison",
+    "quake",
+    "recover",
+    "scorch", "shield", "slash", "stab", "stairs",
+    "teleport", "twinkle",
+    "white", "whoosh", "wind",
+};
 
 /*! \brief Initiate music player
  *
@@ -43,6 +68,10 @@ bool KMusic::init_music(void) {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
         return false;
+    }
+
+    for (int i = 0; i < NUM_EFFECTS; i++) {
+        effects[effect_names[i]] = Mix_LoadWAV(kqres(MUSIC_DIR, "effects/" + effect_names[i] + ".wav").c_str());
     }
 
     return true;
@@ -123,4 +152,85 @@ void KMusic::pause_music(void) {
  */
 void KMusic::resume_music(void) {
     Mix_ResumeMusic();
+}
+
+/*! \brief Play sample effect
+ *
+ * Play an effect... if possible/necessary.  If the effect to
+ * be played is the 'bad-move' effect, than do something visually
+ * so that even if sound is off you know you did something bad :)
+ * PH added explode effect.
+ *
+ * \param   efc Effect to play (index in sfx[])
+ */
+void KMusic::play_effect(std::string effect) {
+    //int a, s, xo = 1, yo = 1;
+    //static const int bx[8] = { -1, 0, 1, 0, -1, 0, 1, 0 };
+    //static const int by[8] = { -1, 0, 1, 0, 1, 0, -1, 0 };
+    //static const int sc[] = { 1, 2, 3, 5, 3, 3, 3, 2, 1 };
+    //SAMPLE* samp;
+    //PALETTE whiteout, old;
+
+    Mix_Chunk* sample;
+
+    try {
+        sample = effects.at(effect);
+    } catch (std::out_of_range e) {
+        std::cerr << "Error finding sample with key " << effect << std::endl;
+        return;
+    }
+
+    if (sample) {
+        Mix_PlayChannel(-1, sample, 0);
+    }
+
+    if (effect == SOUND_BAD) {
+        //TODO: visual effects
+        //fullblit(double_buffer, fx_buffer);
+
+        //clear_bitmap(double_buffer);
+        //blit(fx_buffer, double_buffer, xofs, yofs, xofs, yofs, KQ_SCREEN_W, KQ_SCREEN_H);
+
+        //if (in_combat == 0) {
+        //    xo = xofs;
+        //    yo = yofs;
+        //}
+
+        //for (a = 0; a < 8; a++) {
+        //    Draw.blit2screen(xo + bx[a], yo + by[a]);
+        //    kq_wait(10);
+        //}
+
+        //fullblit(fx_buffer, double_buffer);
+    } else if (effect == SOUND_EXPLODE) {
+        /* TODO: visual effects
+        fullblit(double_buffer, fx_buffer);
+        clear_bitmap(double_buffer);
+        get_palette(old);
+
+        for (a = 0; a < 256; ++a) {
+            s = (old[a].r + old[a].g + old[a].b) > 40 ? 0 : 63;
+            whiteout[a].r = whiteout[a].g = whiteout[a].b = s;
+        }
+
+        blit(fx_buffer, double_buffer, xofs, yofs, xofs, yofs, KQ_SCREEN_W, KQ_SCREEN_H);
+
+        for (s = 0; s < (int)(sizeof(sc) / sizeof(*sc)); ++s) {
+            if (s == 1) {
+                set_palette(whiteout);
+            }
+
+            if (s == 6) {
+                set_palette(old);
+            }
+
+            for (a = 0; a < 8; a++) {
+                Draw.blit2screen(xofs + bx[a] * sc[s], yofs + by[a] * sc[s]);
+                kq_wait(10);
+            }
+        }
+
+        fullblit(fx_buffer, double_buffer);
+        */
+    }
 }
