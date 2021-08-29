@@ -7,16 +7,6 @@
 
 #include "gfx.h"
 
-const uint8_t DARKBLUE = 0,
-              BLUE = 2,
-              DARKRED = 4,
-              GREY1 = 4,
-              GREY2 = 8,
-              GREY3 = 13,
-              WHITE = 15,
-              DBLUE = 3,
-              DRED = 6;
-
 enum BubbleStyle {
     B_TEXT = 0,
     B_THOUGHT = 1,
@@ -45,7 +35,6 @@ enum RenderTarget {
 class KDraw {
 public:
     bool init(void);
-    void shutdown(void);
 
     // Renderer control
     void render(void);
@@ -58,9 +47,6 @@ public:
     void fade(SDL_Color to, int duration);
     void menubox(int x, int y, int width, int height, int color);
     void print_font(int sx, int sy, const std::string& msg, FontColor index);
-
-    SDL_Renderer* getRenderer();
-    Raster* getMenuptr();
 
 private:
     void draw_kq_box(int x1, int y1, int x2, int y2, int bg, BubbleStyle bstyle);
@@ -87,12 +73,6 @@ private:
      * \note uses inefficient linear search for now.
      */
     int get_glyph_index(uint32_t cp);
-
-    SDL_Window* window = NULL;
-    SDL_Renderer* renderer = NULL;
-    SDL_Texture* main_target = NULL;
-    SDL_Texture* overlay_target = NULL;
-    Texture* kfonts = NULL;
-    Texture* misc = NULL;
-    Raster* menuptr = NULL;
 };
+
+extern KDraw draw;

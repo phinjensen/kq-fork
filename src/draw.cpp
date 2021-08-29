@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include "draw.h"
+#include "game.h"
 
 const int FONT_WIDTH = 8;
 const int FONT_HEIGHT = 8;
@@ -28,92 +29,6 @@ static uint32_t glyph_lookup[][2] = {
     { 0x00fc, 106 },      /* u-umlaut */
     { 0, 0 },
 };
-
-bool should_stretch_view = true, windowed = true;
-
-bool KDraw::init(void) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
-        printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
-        return false;
-    }
-
-    // Create window
-    Uint32 windowFlags = SDL_WINDOW_SHOWN;
-
-    if (!windowed) windowFlags = windowFlags | SDL_WINDOW_FULLSCREEN;
-
-    int w = KQ_SCALED_SCREEN_W;
-    int h = KQ_SCALED_SCREEN_H;
-
-    if (!should_stretch_view) {
-        w = KQ_SCREEN_W;
-        h = KQ_SCREEN_H;
-    }
-
-    window = SDL_CreateWindow(
-                 "KQ Lives",
-                 SDL_WINDOWPOS_UNDEFINED,
-                 SDL_WINDOWPOS_UNDEFINED,
-                 w, h, windowFlags);
-
-    if (window == NULL) {
-        printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
-        return false;
-    }
-
-    //Create renderer for window
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-    if (renderer == NULL) {
-        printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
-        return false;
-    }
-
-    //Initialize renderer color
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    SDL_RenderSetScale(renderer, 4, 4);
-
-    //Create main render target
-    main_target = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, KQ_SCREEN_W, KQ_SCREEN_H);
-    overlay_target = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, KQ_SCREEN_W,
-                                       KQ_SCREEN_H);
-    SDL_SetTextureBlendMode(main_target, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureBlendMode(overlay_target, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(renderer, overlay_target);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-    SDL_RenderFillRect(renderer, NULL);
-    SDL_SetRenderTarget(renderer, main_target);
-
-    //Initialize PNG loading
-    int imgFlags = IMG_INIT_PNG;
-
-    if (!(IMG_Init(imgFlags) & imgFlags)) {
-        printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
-        return false;
-    }
-
-    // TODO: Figure out how palettes work and if we need to mess with them.
-    // https://liballeg.org/stabledocs/en/alleg011.html#set_palette
-    // set_palette(pal);
-
-    kfonts = new Texture("fonts.png", renderer);
-    misc = new Texture("misc.png", renderer);
-    menuptr = new Raster(*misc, 24, 0, 16, 8);
-
-    return true;
-}
-
-void KDraw::shutdown(void) {
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    window = NULL;
-    renderer = NULL;
-
-    //Quit SDL subsystems
-    IMG_Quit();
-    SDL_Quit();
-}
 
 void KDraw::fade(SDL_Color to, int duration) {
     /* make sure fade speed is in range */
@@ -149,14 +64,6 @@ void KDraw::render(void) {
     SDL_SetRenderTarget(renderer, main_target);
 }
 
-SDL_Renderer* KDraw::getRenderer() {
-    return renderer;
-}
-
-Raster* KDraw::getMenuptr() {
-    return menuptr;
-}
-
 void KDraw::setColor(Uint32 r, Uint32 g, Uint32 b, Uint32 a) {
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
@@ -179,11 +86,11 @@ void KDraw::menubox(int x, int y, int width, int height, int color) {
 
 void KDraw::draw_kq_box(int x1, int y1, int x2, int y2, int bg, BubbleStyle bstyle) {
     /* Draw a maybe-translucent background */
-    if (bg == BLUE) {
-        // TODO: Translucency? It looks like it doesn't actually render translucent.
-    } else {
-        bg = (bg == DARKBLUE) ? DBLUE : DRED;
-    }
+    //if (bg == BLUE) {
+    //    // TODO: Translucency? It looks like it doesn't actually render translucent.
+    //} else {
+    //    bg = (bg == DARKBLUE) ? DBLUE : DRED;
+    //}
 
     SDL_Rect dimensions = { x1 + 4, y1 + 4, x2 - x1 - 3, y2 - y1 - 3 };
     SDL_SetRenderDrawColor(renderer, 0x20, 0x20, 0x20, 0xFF);

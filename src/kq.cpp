@@ -11,6 +11,8 @@
 #include "gettext.h"
 #include "random.h"
 
+KMusic music;
+KDraw draw;
 KGame game;
 
 int main(int argc, const char* argv[]) {

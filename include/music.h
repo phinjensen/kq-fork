@@ -42,3 +42,5 @@ public:
 private:
     Mix_Music* current_song;
 };
+
+extern KMusic music;
