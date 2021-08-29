@@ -1,43 +1,42 @@
 #pragma once
 
-class KPlayerInput
-{
-  public:
+class KPlayerInput {
+public:
     KPlayerInput();
     ~KPlayerInput() = default;
 
     void readcontrols();
 
-  public:
+public:
     // Flags for determining keypresses and player movement.
 
     // Moves the cursor or player horizontally (right).
-    int right;
+    bool right;
     // Moves the cursor or player horizontally (left).
-    int left;
+    bool left;
     // Moves the cursor or player vertically (up).
-    int up;
+    bool up;
     // Moves the cursor or player vertically (down).
-    int down;
+    bool down;
     // Exits menus, or opens the game menu.
-    int besc;
+    bool besc;
     // Usually the action or "accept" button.
-    int balt;
+    bool balt;
     // Usually the run or "cancel" button.
-    int bctrl;
+    bool bctrl;
     // Usually the menu button.
-    int benter;
+    bool benter;
     // Displays the (not-yet implemented) help menu.
-    int bhelp;
+    bool bhelp;
     // Activates cheats (calls cheat.lua) and runs whatever commands are found there.
-    int bcheat;
+    bool bcheat;
 
     // Scan codes for the keys (help is always F1)
-    int kright, kleft, kup, kdown;
-    int kesc, kenter, kalt, kctrl;
+    //int kright, kleft, kup, kdown;
+    //int kesc, kenter, kalt, kctrl;
 
     // Joystick buttons
-    int jbalt, jbctrl, jbenter, jbesc;
+    //int jbalt, jbctrl, jbenter, jbesc;
 };
 
-extern KPlayerInput PlayerInput;
+extern KPlayerInput playerInput;

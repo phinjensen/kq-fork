@@ -5,6 +5,7 @@
 #include "game.h"
 #include "gettext.h"
 #include "gfx.h"
+#include "input.h"
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -27,6 +28,7 @@ const uint8_t DARKBLUE = 0,
 
 StartMenuResult KGame::start_menu(bool skip_splash) {
     bool stop = false;
+    StartMenuResult result = StartMenuResult::EXIT;
 
     Texture title("title.png", renderer);
     Texture splash("kqt.png", renderer);
@@ -85,16 +87,8 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
     int ptr = 0;
     bool redraw = true;
 
-    SDL_Event e;
-
     //TODO: Game.reset_world();
     while (!stop) {
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                stop = true;
-            }
-        }
-
         /* Draw menu and handle menu selection */
         if (redraw) {
             draw.setColor(0x00, 0x00, 0x00, 0x00);
@@ -108,89 +102,92 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
             menuptr->renderTo(112, ptr * 8 + 124);
             draw.render();
             redraw = false;
+        }
 
-            // TODO: display_credits(double_buffer);
+        playerInput.readcontrols();
 
-            // TODO: Convert player input class
+        // TODO: display_credits(double_buffer);
 
-            //    if (PlayerInput.bhelp) {
-            //        Game.unpress();
-            //        show_help();
-            //        redraw = 1;
-            //    }
+        // TODO: Convert player input class
 
-            //    if (PlayerInput.up) {
-            //        Game.unpress();
+        //    if (PlayerInput.bhelp) {
+        //        Game.unpress();
+        //        show_help();
+        //        redraw = 1;
+        //    }
 
-            //        if (ptr > 0) {
-            //            ptr--;
-            //        } else {
-            //            ptr = 3;
-            //        }
+        if (playerInput.up) {
+            unpress();
 
-            //        play_effect(SND_CLICK, 128);
-            //        redraw = 1;
-            //    }
+            if (ptr > 0) {
+                ptr--;
+            } else {
+                ptr = 3;
+            }
 
-            //    if (PlayerInput.down) {
-            //        Game.unpress();
+            //TODO: Sound effects: play_effect(SND_CLICK, 128);
+            redraw = 1;
+        }
 
-            //        if (ptr < 3) {
-            //            ptr++;
-            //        } else {
-            //            ptr = 0;
-            //        }
+        if (playerInput.down) {
+            unpress();
 
-            //        play_effect(SND_CLICK, 128);
-            //        redraw = 1;
-            //    }
+            if (ptr < 3) {
+                ptr++;
+            } else {
+                ptr = 0;
+            }
 
-            //    if (PlayerInput.balt) {
-            //        Game.unpress();
+            //TODO: play_effect(SND_CLICK, 128);
+            redraw = 1;
+        }
 
-            //        if (ptr == 0) { /* User selected "Continue" */
-            //            // Check if we've saved any games at all
-            //            bool anyslots = false;
+        if (playerInput.balt) {
+            unpress();
 
-            //            for (auto& sg : savegame) {
-            //                if (sg.num_characters > 0) {
-            //                    anyslots = true;
-            //                    break;
-            //                }
-            //            }
+            if (ptr == 0) { /* User selected "Continue" */
+                // Check if we've saved any games at all
+                bool anyslots = false;
 
-            //            if (!anyslots) {
-            //                stop = 2;
-            //            } else if (saveload(0) == 1) {
-            //                stop = 1;
-            //            }
+                //TODO: Load saved game
+                //for (auto& sg : savegame) {
+                //    if (sg.num_characters > 0) {
+                //        anyslots = true;
+                //        break;
+                //    }
+                //}
 
-            //            redraw = 1;
-            //        } else if (ptr == 1) { /* User selected "New Game" */
-            //            stop = 2;
-            //        } else if (ptr == 2) { /* Config */
-            //            clear_bitmap(double_buffer);
-            //            config_menu();
-            //            redraw = 1;
+                //if (!anyslots) {
+                //    stop = 2;
+                //} else if (saveload(0) == 1) {
+                //    stop = 1;
+                //}
 
-            //            /* TODO: Save Global Settings Here */
-            //        } else if (ptr == 3) { /* Exit */
-            //            Game.klog(_("Then exit you shall!"));
-            //            return 2;
-            //        }
-            //    }
-            //}
+                result = StartMenuResult::CONTINUE;
+                break;
+            } else if (ptr == 1) { /* User selected "New Game" */
+                result = StartMenuResult::NEW_GAME;
+                break;
+            } else if (ptr == 2) { /* Config */
+                //TODO: Config menu
+                //config_menu();
+                result = StartMenuResult::EXIT;
+                redraw = 1;
 
-            //if (stop == 2) {
-            //    /* New game init */
-            //    Disk.load_game_from_file(kqres(eDirectories::DATA_DIR, "starting.xml").c_str());
-            //}
+                /* TODO: Save Global Settings Here */
+            } else if (ptr == 3) { /* Exit */
+                //Game.klog(_("Then exit you shall!"));
+                return StartMenuResult::EXIT;
+            }
+        }
 
-            //return stop - 1;
+        if (result == StartMenuResult::NEW_GAME) {
+            /* New game init */
+            //TODO: Load new game Disk.load_game_from_file(kqres(eDirectories::DATA_DIR, "starting.xml").c_str());
         }
     }
 
-    return StartMenuResult::EXIT;
+    return result;
 }
 
 bool KGame::startup(void) {
@@ -295,4 +292,17 @@ bool KGame::init_sdl(void) {
     menuptr = new Raster(*misc, 24, 0, 16, 8);
 
     return true;
+}
+
+void KGame::unpress(void) {
+    Uint32 count = SDL_GetTicks();
+
+    while (SDL_GetTicks() - count < 200) {
+        playerInput.readcontrols();
+
+        if (!(playerInput.balt || playerInput.bctrl || playerInput.benter || playerInput.besc || playerInput.up ||
+                playerInput.down || playerInput.right || playerInput.left || playerInput.bcheat)) {
+            break;
+        }
+    }
 }

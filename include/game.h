@@ -15,6 +15,8 @@ public:
     void shutdown(void);
     StartMenuResult start_menu(bool skip_splash);
 
+    void unpress(void);
+
 private:
     bool init_sdl(void);
 };

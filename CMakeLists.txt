@@ -55,7 +55,7 @@ set(kq-fork-sources
 	#src/heroc.cpp
 	#src/hskill.cpp
 	#src/imgcache.cpp
-	#src/input.cpp
+	src/input.cpp
 	#src/intrface.cpp
 	#src/itemmenu.cpp
   src/game.cpp

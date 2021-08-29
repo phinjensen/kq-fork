@@ -1,7 +1,6 @@
+#include <SDL2/SDL.h>
+
 #include "input.h"
-#include "allegro.h"
-#include "kq.h"
-#include "music.h"
 #include "platform.h"
 
 KPlayerInput::KPlayerInput()
@@ -14,20 +13,7 @@ KPlayerInput::KPlayerInput()
     , bctrl { 0 }
     , benter { 0 }
     , bhelp { 0 }
-    , bcheat { 0 }
-    , kright { 0 }
-    , kleft { 0 }
-    , kup { 0 }
-    , kdown { 0 }
-    , kesc { 0 }
-    , kenter { 0 }
-    , kalt { 0 }
-    , kctrl { 0 }
-    , jbalt { 0 }
-    , jbctrl { 0 }
-    , jbenter { 0 }
-    , jbesc { 0 }
-{
+    , bcheat { 0 } {
 }
 
 /*! \brief Handle user input.
@@ -38,67 +24,62 @@ KPlayerInput::KPlayerInput()
  * 2003-09-07 Caz Jones: last time code workaround pci-gameport bug
  *            (should not affect non-buggy drivers - please report to edge)
  */
-void KPlayerInput::readcontrols()
-{
-    JOYSTICK_INFO* stk;
+void KPlayerInput::readcontrols() {
+    //TODO: JOYSTICK_INFO* stk;
 
-    Music.poll_music();
+    SDL_PumpEvents();
+    const Uint8 *key = SDL_GetKeyboardState(NULL);
 
-    /* PH 2002.09.21 in case this is needed (not sure on which platforms it is) */
-    if (keyboard_needs_poll())
-    {
-        poll_keyboard();
-    }
+    balt = key[SDL_SCANCODE_LALT];
+    besc = key[SDL_SCANCODE_ESCAPE];
+    bctrl = key[SDL_SCANCODE_LCTRL];
+    benter = key[SDL_SCANCODE_RETURN];
+    bhelp = key[SDL_SCANCODE_F1];
+    bcheat = key[SDL_SCANCODE_F10];
 
-    PlayerInput.balt = key[PlayerInput.kalt];
-    PlayerInput.besc = key[PlayerInput.kesc];
-    PlayerInput.bctrl = key[PlayerInput.kctrl];
-    PlayerInput.benter = key[PlayerInput.kenter];
-    PlayerInput.bhelp = key[KEY_F1];
-    PlayerInput.bcheat = key[KEY_F10];
-
-    PlayerInput.up = key[PlayerInput.kup];
-    PlayerInput.down = key[PlayerInput.kdown];
-    PlayerInput.left = key[PlayerInput.kleft];
-    PlayerInput.right = key[PlayerInput.kright];
+    up = key[SDL_SCANCODE_UP];
+    down = key[SDL_SCANCODE_DOWN];
+    left = key[SDL_SCANCODE_LEFT];
+    right = key[SDL_SCANCODE_RIGHT];
 
     /* Emergency kill-game set. */
     /* PH modified - need to hold down for 0.50 sec */
-    if (key[KEY_ALT] && key[KEY_X])
-    {
-        int kill_time = timer_count + Game.KQ_TICKS / 2;
+    if (key[SDL_SCANCODE_LALT] && key[SDL_SCANCODE_X]) {
+        //TODO: Kill game
+        //int kill_time = timer_count + Game.KQ_TICKS / 2;
 
-        while (key[KEY_ALT] && key[KEY_X])
-        {
-            if (timer_count >= kill_time)
-            {
-                /* Pressed, now wait for release */
-                clear_bitmap(screen);
-                while (key[KEY_ALT] && key[KEY_X])
-                {
-                }
-                Game.program_death(_("X-ALT pressed... exiting."));
-            }
-        }
+        //while (key[KEY_ALT] && key[KEY_X]) {
+        //    if (timer_count >= kill_time) {
+        //        /* Pressed, now wait for release */
+        //        clear_bitmap(screen);
+
+        //        while (key[KEY_ALT] && key[KEY_X]) {
+        //        }
+
+        //        Game.program_death(_("X-ALT pressed... exiting."));
+        //    }
+        //}
     }
-#ifdef DEBUGMODE
-    extern char debugging;
-    if (debugging > 0)
-    {
-        if (key[KEY_F11])
-        {
-            Game.data_dump();
-        }
 
-        /* Back to menu - by pretending all the heroes died.. hehe */
-        if (key[KEY_ALT] && key[KEY_M])
-        {
-            alldead = 1;
-        }
-    }
-#endif
+    //TODO: Debug mode
+    //#ifdef DEBUGMODE
+    //    extern char debugging;
+    //
+    //    if (debugging > 0) {
+    //        if (key[KEY_F11]) {
+    //            Game.data_dump();
+    //        }
+    //
+    //        /* Back to menu - by pretending all the heroes died.. hehe */
+    //        if (key[KEY_ALT] && key[KEY_M]) {
+    //            alldead = 1;
+    //        }
+    //    }
+    //
+    //#endif
 
-    if (use_joy > 0 && maybe_poll_joystick() == 0)
+    //TODO: Joystick
+    /* if (use_joy > 0 && maybe_poll_joystick() == 0)
     {
         stk = &joy[use_joy - 1];
         PlayerInput.left |= stk->stick[0].axis[0].d1;
@@ -110,7 +91,7 @@ void KPlayerInput::readcontrols()
         PlayerInput.bctrl |= stk->button[1].b;
         PlayerInput.benter |= stk->button[2].b;
         PlayerInput.besc |= stk->button[3].b;
-    }
+    }*/
 }
 
-KPlayerInput PlayerInput;
+KPlayerInput playerInput;
