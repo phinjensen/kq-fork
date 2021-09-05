@@ -3,19 +3,6 @@
 #include "input.h"
 #include "platform.h"
 
-KPlayerInput::KPlayerInput()
-    : right { 0 }
-    , left { 0 }
-    , up { 0 }
-    , down { 0 }
-    , besc { 0 }
-    , balt { 0 }
-    , bctrl { 0 }
-    , benter { 0 }
-    , bhelp { 0 }
-    , bcheat { 0 } {
-}
-
 /*! \brief Handle user input.
  *
  * Updates all of the game controls according to user input.
@@ -30,36 +17,35 @@ void KPlayerInput::readcontrols() {
     SDL_PumpEvents();
     const Uint8 *key = SDL_GetKeyboardState(NULL);
 
-    balt = key[SDL_SCANCODE_LALT];
-    besc = key[SDL_SCANCODE_ESCAPE];
-    bctrl = key[SDL_SCANCODE_LCTRL];
-    benter = key[SDL_SCANCODE_RETURN];
-    bhelp = key[SDL_SCANCODE_F1];
-    bcheat = key[SDL_SCANCODE_F10];
-
-    up = key[SDL_SCANCODE_UP];
-    down = key[SDL_SCANCODE_DOWN];
-    left = key[SDL_SCANCODE_LEFT];
-    right = key[SDL_SCANCODE_RIGHT];
+    right = key[scancode_right];
+    left = key[scancode_left];
+    up = key[scancode_up];
+    down = key[scancode_down];
+    escape = key[scancode_escape];
+    confirm = key[scancode_confirm];
+    cancel = key[scancode_cancel];
+    enter = key[scancode_enter];
+    help = key[scancode_help];
+    cheat = key[scancode_cheat];
 
     /* Emergency kill-game set. */
     /* PH modified - need to hold down for 0.50 sec */
-    if (key[SDL_SCANCODE_LALT] && key[SDL_SCANCODE_X]) {
-        //TODO: Kill game
-        //int kill_time = timer_count + Game.KQ_TICKS / 2;
+    //if (key[SDL_SCANCODE_LALT] && key[SDL_SCANCODE_X]) {
+    //TODO: Kill game
+    //int kill_time = timer_count + Game.KQ_TICKS / 2;
 
-        //while (key[KEY_ALT] && key[KEY_X]) {
-        //    if (timer_count >= kill_time) {
-        //        /* Pressed, now wait for release */
-        //        clear_bitmap(screen);
+    //while (key[KEY_ALT] && key[KEY_X]) {
+    //    if (timer_count >= kill_time) {
+    //        /* Pressed, now wait for release */
+    //        clear_bitmap(screen);
 
-        //        while (key[KEY_ALT] && key[KEY_X]) {
-        //        }
+    //        while (key[KEY_ALT] && key[KEY_X]) {
+    //        }
 
-        //        Game.program_death(_("X-ALT pressed... exiting."));
-        //    }
-        //}
-    }
+    //        Game.program_death(_("X-ALT pressed... exiting."));
+    //    }
+    //}
+    //}
 
     //TODO: Debug mode
     //#ifdef DEBUGMODE
@@ -92,6 +78,10 @@ void KPlayerInput::readcontrols() {
         PlayerInput.benter |= stk->button[2].b;
         PlayerInput.besc |= stk->button[3].b;
     }*/
+}
+
+const char* KPlayerInput::getKeyName(SDL_Scancode code) {
+    return SDL_GetKeyName(SDL_GetKeyFromScancode(code));
 }
 
 KPlayerInput playerInput;

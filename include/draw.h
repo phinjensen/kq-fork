@@ -48,6 +48,9 @@ public:
     void menubox(int x, int y, int width, int height, int color);
     void print_font(int sx, int sy, const std::string& msg, FontColor index);
 
+    // Specific menus
+    void show_help(void);
+
 private:
     void draw_kq_box(int x1, int y1, int x2, int y2, int bg, BubbleStyle bstyle);
 
@@ -73,6 +76,8 @@ private:
      * \note uses inefficient linear search for now.
      */
     int get_glyph_index(uint32_t cp);
+
+    void setting_item(int y, const char* caption, const char* value, FontColor color);
 };
 
 extern KDraw draw;

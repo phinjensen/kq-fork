@@ -14,7 +14,7 @@ SDL_Texture* overlay_target = NULL;
 Texture *kfonts = NULL, *misc = NULL;
 Raster *menuptr = NULL;
 
-bool should_stretch_view = true, windowed = false;
+bool should_stretch_view = true, windowed = true;
 
 const uint8_t DARKBLUE = 0,
               BLUE = 2,
@@ -110,11 +110,11 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
 
         // TODO: Convert player input class
 
-        //    if (PlayerInput.bhelp) {
-        //        Game.unpress();
-        //        show_help();
-        //        redraw = 1;
-        //    }
+        if (playerInput.help) {
+            unpress();
+            draw.show_help();
+            redraw = 1;
+        }
 
         if (playerInput.up) {
             unpress();
@@ -142,7 +142,7 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
             redraw = 1;
         }
 
-        if (playerInput.balt) {
+        if (playerInput.confirm) {
             unpress();
 
             if (ptr == 0) { /* User selected "Continue" */
@@ -300,8 +300,8 @@ void KGame::unpress(void) {
     while (SDL_GetTicks() - count < 200) {
         playerInput.readcontrols();
 
-        if (!(playerInput.balt || playerInput.bctrl || playerInput.benter || playerInput.besc || playerInput.up ||
-                playerInput.down || playerInput.right || playerInput.left || playerInput.bcheat)) {
+        if (!(playerInput.confirm || playerInput.cancel || playerInput.enter || playerInput.escape || playerInput.up ||
+                playerInput.down || playerInput.right || playerInput.left || playerInput.cheat)) {
             break;
         }
     }
