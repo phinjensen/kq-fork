@@ -113,7 +113,7 @@ void display_credits(void) {
     SDL_SetRenderTarget(renderer, wk);
     static const uint32_t max_ticks = 640;
 
-    static const char* pressf1 = gettext("Press F1 for help");
+    static const char* pressf1 = _("Press F1 for help");
 
     if (ticks > max_ticks) {
         SDL_RenderClear(renderer);

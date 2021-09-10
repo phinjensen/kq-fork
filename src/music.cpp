@@ -115,10 +115,10 @@ void KMusic::play_music(const std::string& music_name) {
              * smooth */
             Mix_PlayMusic(current_song, -1);
         } else {
-            printf(gettext("Could not load %s!\n"), filename.c_str());
+            printf(_("Could not load %s!\n"), filename.c_str());
         }
     } else {
-        printf(gettext("Could not load %s!\n"), filename.c_str());
+        printf(_("Could not load %s!\n"), filename.c_str());
         current_song = NULL;
     }
 }

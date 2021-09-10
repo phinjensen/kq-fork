@@ -313,19 +313,19 @@ void KDraw::setting_item(int y, const char* caption, const char* value, FontColo
 void KDraw::show_help(void) {
     int xofs = 0, yofs = 0; // TODO: We may be able to get rid of the offset variables
     menubox(116 + xofs, yofs, 9, 1, 0); //, BLUE);
-    print_font(132 + xofs, 8 + yofs, gettext("KQ Help"), FontColor::GOLD);
+    print_font(132 + xofs, 8 + yofs, _("KQ Help"), FontColor::GOLD);
     menubox(32 + xofs, 32 + yofs, 30, 20, 0); //, BLUE);
     menubox(xofs, 216 + yofs, 38, 1, 0); //, BLUE);
-    print_font(16 + xofs, 224 + yofs, gettext("Press CONFIRM to exit this screen"), FontColor::NORMAL);
-    setting_item(72, gettext("Up Key:"), playerInput.getKeyName(playerInput.scancode_up),
+    print_font(16 + xofs, 224 + yofs, _("Press CONFIRM to exit this screen"), FontColor::NORMAL);
+    setting_item(72, _("Up Key:"), playerInput.getKeyName(playerInput.scancode_up),
                  FontColor::NORMAL);
-    setting_item(80, gettext("Down Key:"), playerInput.getKeyName(playerInput.scancode_down), FontColor::NORMAL);
-    setting_item(88, gettext("Left Key:"), playerInput.getKeyName(playerInput.scancode_left), FontColor::NORMAL);
-    setting_item(96, gettext("Right Key:"), playerInput.getKeyName(playerInput.scancode_right), FontColor::NORMAL);
-    setting_item(104, gettext("Confirm Key:"), playerInput.getKeyName(playerInput.scancode_confirm), FontColor::NORMAL);
-    setting_item(112, gettext("Cancel Key:"), playerInput.getKeyName(playerInput.scancode_cancel), FontColor::NORMAL);
-    setting_item(120, gettext("Menu Key:"), playerInput.getKeyName(playerInput.scancode_enter), FontColor::NORMAL);
-    setting_item(128, gettext("System Menu Key:"), playerInput.getKeyName(playerInput.scancode_escape), FontColor::NORMAL);
+    setting_item(80, _("Down Key:"), playerInput.getKeyName(playerInput.scancode_down), FontColor::NORMAL);
+    setting_item(88, _("Left Key:"), playerInput.getKeyName(playerInput.scancode_left), FontColor::NORMAL);
+    setting_item(96, _("Right Key:"), playerInput.getKeyName(playerInput.scancode_right), FontColor::NORMAL);
+    setting_item(104, _("Confirm Key:"), playerInput.getKeyName(playerInput.scancode_confirm), FontColor::NORMAL);
+    setting_item(112, _("Cancel Key:"), playerInput.getKeyName(playerInput.scancode_cancel), FontColor::NORMAL);
+    setting_item(120, _("Menu Key:"), playerInput.getKeyName(playerInput.scancode_enter), FontColor::NORMAL);
+    setting_item(128, _("System Menu Key:"), playerInput.getKeyName(playerInput.scancode_escape), FontColor::NORMAL);
 
     while (!playerInput.confirm && !playerInput.cancel) {
         render();

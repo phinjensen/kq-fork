@@ -96,10 +96,10 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
             draw.clear();
             title.render(NULL, 0, 0, KQ_SCREEN_W, 200);
             draw.menubox(112, 116, 10, 4, BLUE);
-            draw.print_font(128, 124, gettext("Continue"), FontColor::NORMAL);
-            draw.print_font(128, 132, gettext("New Game"), FontColor::NORMAL);
-            draw.print_font(136, 140, gettext("Config"), FontColor::NORMAL);
-            draw.print_font(144, 148, gettext("Exit"), FontColor::NORMAL);
+            draw.print_font(128, 124, _("Continue"), FontColor::NORMAL);
+            draw.print_font(128, 132, _("New Game"), FontColor::NORMAL);
+            draw.print_font(136, 140, _("Config"), FontColor::NORMAL);
+            draw.print_font(144, 148, _("Exit"), FontColor::NORMAL);
             menuptr->renderTo(112, ptr * 8 + 124);
             draw.render();
             redraw = false;

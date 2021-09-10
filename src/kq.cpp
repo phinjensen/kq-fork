@@ -29,7 +29,7 @@ int main(int argc, const char* argv[]) {
         }
 
         if (!strcmp(argv[i], "--help")) {
-            printf(gettext("Sorry, no help screen at this time.\n"));
+            printf(_("Sorry, no help screen at this time.\n"));
             return EXIT_SUCCESS;
         }
     }
