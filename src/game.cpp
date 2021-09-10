@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "constants.h"
+#include "credits.h"
 #include "draw.h"
 #include "game.h"
 #include "gettext.h"
@@ -106,7 +107,7 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
 
         playerInput.readcontrols();
 
-        // TODO: display_credits(double_buffer);
+        display_credits();
 
         // TODO: Convert player input class
 
@@ -193,6 +194,7 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
 bool KGame::startup(void) {
     init_sdl();
     music.init_music();
+    allocate_credits();
     //TODO: Enable (if necessary) keybaord
     //TODO: Enable (if necessary) sound
     //TODO: Enable (if necessary) timers

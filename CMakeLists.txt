@@ -41,7 +41,7 @@ set(kq-fork-sources
 	#src/bounds.cpp
 	#src/combat.cpp
 	#src/console.cpp
-	#src/credits.cpp
+	src/credits.cpp
 	#src/disk.cpp
 	src/draw.cpp
 	#src/effects.cpp
