@@ -234,3 +234,5 @@ void KMusic::play_effect(std::string effect) {
         */
     }
 }
+
+KMusic Music;

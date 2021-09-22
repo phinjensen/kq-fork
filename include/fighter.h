@@ -2,7 +2,6 @@
 
 #include "enums.h"
 #include "structs.h"
-#include <allegro.h>
 #include <cstdint>
 class Raster;
 
@@ -11,11 +10,10 @@ class Raster;
  * s_player is transformed into a KFighter during combat.
  * See enemy_init() for more information on the fields.
  */
-class KFighter
-{
+class KFighter {
     friend class KDisk;
 
-  public:
+public:
     KFighter();
     KFighter(const KFighter& rhs); // Copy constructor
     KFighter(KFighter&& rhs);      // C++11 move constructor
@@ -209,7 +207,7 @@ class KFighter
     int imb[2];
     std::shared_ptr<Raster> img;
 
-  protected:
+protected:
     uint8_t sts[NUM_SPELL_TYPES]; /*!< eSpellType, how long a specific status effect remains on this fighter (such as
                                      "remaining poison", etc.). */
 };

@@ -84,4 +84,4 @@ const char* KPlayerInput::getKeyName(SDL_Scancode code) {
     return SDL_GetKeyName(SDL_GetKeyFromScancode(code));
 }
 
-KPlayerInput playerInput;
+KPlayerInput PlayerInput;

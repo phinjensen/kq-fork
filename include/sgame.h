@@ -21,45 +21,43 @@
 
 #pragma once
 
-#include "kq.h"
+#include "enums.h"
+
+/* Number of save game slots */
+const int NUMSG = 20;
 
 /*! \brief Save Game Stats
  * The information that's shown when picking a slot to save/load.
  */
-struct s_sgstats
-{
+struct s_sgstats {
     int num_characters;
     int gold;
     int time;
-    struct _characters
-    {
+    struct _characters {
         int id, level, hp, mp;
     } characters[PSIZE];
     static s_sgstats get_current(void);
 };
 
-class KSaveGame
-{
-  public:
+class KSaveGame {
+public:
     void load_sgstats(void);
-    int start_menu(int);
-    int system_menu(void);
-
-  protected:
-    void show_sgstats(int);
-    int save_game(void);
-    int load_game(void);
-    void delete_game(void);
+    //int start_menu(int);
+    //int system_menu(void);
     int saveload(int);
-    int confirm_action(void);
+    s_sgstats* get_savegames(void);
 
-  protected:
-    /* Number of save game slots */
-    const static int NUMSG = 20;
+protected:
+    void show_sgstats(int);
+    //int save_game(void);
+    //int load_game(void);
+    //void delete_game(void);
+    //int confirm_action(void);
 
+protected:
     /* These describe the save slots. Number of characters, gp, etc */
     /* They are used to make the save menu prettier. */
-    s_sgstats savegame[NUMSG];
+    s_sgstats savegames[NUMSG];
 
     /* Which save_slot the player is pointing to */
     int save_ptr = 0;

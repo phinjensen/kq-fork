@@ -27,7 +27,6 @@
  * \date 20030805
  */
 
-#include <allegro.h>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -43,8 +42,7 @@ class Raster;
  *
  * This is the structure of each map on disk.
  */
-struct s_map
-{
+struct s_map {
     signed char map_no; /*!< Not used in code. */
     uint8_t zero_zone;  /*!< Non-zero if zone 0 triggers an event */
     uint8_t map_mode;   /*!< Map's parallax mode (see draw_map()) */

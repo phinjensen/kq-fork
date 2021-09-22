@@ -59,4 +59,4 @@ private:
     std::map<std::string, Mix_Chunk*> effects;
 };
 
-extern KMusic music;
+extern KMusic Music;

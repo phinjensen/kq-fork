@@ -2,18 +2,28 @@
 
 #include "constants.h"
 #include "credits.h"
-#include "draw.h"
 #include "game.h"
 #include "gettext.h"
 #include "gfx.h"
 #include "input.h"
+#include "sgame.h"
+
+volatile int timer = 0, ksec = 0, kmin = 0, khr = 0, timer_count = 0, animation_count = 0;
+/*! Number of characters in the party */
+uint32_t numchrs = 0;
+/*! Identifies characters in the party */
+ePIDX pidx[MAXCHRS];
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 SDL_Texture* main_target = NULL;
 SDL_Texture* overlay_target = NULL;
+
 Texture *kfonts = NULL, *misc = NULL;
-Raster *menuptr = NULL;
+Raster *menuptr = NULL, *dnptr = NULL, *upptr = NULL, *frames[MAXCHRS][MAXFRAMES];
+KGame Game;
+
+char *strbuf = NULL;
 
 bool should_stretch_view = true, windowed = true;
 
@@ -41,22 +51,22 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
     //
     //    if (debugging == 0) {
     //#endif
-    music.play_music("oxford.s3m");
+    Music.play_music("oxford.s3m");
 
     /* Play splash (with the staff and the heroes in circle */
     if (!skip_splash) {
-        draw.setColor(0x00, 0x00, 0x00, 0x00);
-        draw.clear();
+        Draw.setColor(0x00, 0x00, 0x00, 0x00);
+        Draw.clear();
         staff.renderTo(124, 22);
-        draw.render();
+        Draw.render();
 
         SDL_Delay(1000);
 
         // Zoom staff
         for (int f = 0; f < 42; f++) {
-            draw.clear();
+            Draw.clear();
             staff.renderTo(124 - (f * 32), 22 - (f * 96), 72 + (f * 64), 226 + (f * 192));
-            draw.render();
+            Draw.render();
             SDL_Delay(100);
         }
 
@@ -64,21 +74,21 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
         for (int f = 0; f < 5; f++) {
             dudes.setAlpha(f * 255 / 4);
             dudes.renderTo(106, 64);
-            draw.render();
+            Draw.render();
             SDL_Delay(100);
         }
 
         SDL_Delay(900);
 
-        draw.fade(SDL_Color { 0xFF, 0xFF, 0xFF }, 1500);
-        draw.clear();
+        Draw.fade(SDL_Color { 0xFF, 0xFF, 0xFF }, 1500);
+        Draw.clear();
 
         for (int fade_color = 0; fade_color < 16; fade_color++) {
             int color = 0xFF - (fade_color * 17);
-            draw.setColor(0xFF, 0xFF, 0xFF, color);
-            draw.clear();
+            Draw.setColor(0xFF, 0xFF, 0xFF, color);
+            Draw.clear();
             title.render(NULL, 0, 60 - (fade_color * 4), KQ_SCREEN_W, 200);
-            draw.render();
+            Draw.render();
             SDL_Delay(fade_color == 0 ? 500 : 100);
         }
 
@@ -92,32 +102,32 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
     while (!stop) {
         /* Draw menu and handle menu selection */
         if (redraw) {
-            draw.setColor(0x00, 0x00, 0x00, 0x00);
-            draw.clear();
+            Draw.setColor(0x00, 0x00, 0x00, 0x00);
+            Draw.clear();
             title.render(NULL, 0, 0, KQ_SCREEN_W, 200);
-            draw.menubox(112, 116, 10, 4, BLUE);
-            draw.print_font(128, 124, _("Continue"), FontColor::NORMAL);
-            draw.print_font(128, 132, _("New Game"), FontColor::NORMAL);
-            draw.print_font(136, 140, _("Config"), FontColor::NORMAL);
-            draw.print_font(144, 148, _("Exit"), FontColor::NORMAL);
+            Draw.menubox(112, 116, 10, 4, BLUE);
+            Draw.print_font(128, 124, _("Continue"), FontColor::NORMAL);
+            Draw.print_font(128, 132, _("New Game"), FontColor::NORMAL);
+            Draw.print_font(136, 140, _("Config"), FontColor::NORMAL);
+            Draw.print_font(144, 148, _("Exit"), FontColor::NORMAL);
             menuptr->renderTo(112, ptr * 8 + 124);
-            draw.render();
+            Draw.render();
             redraw = false;
         }
 
-        playerInput.readcontrols();
+        PlayerInput.readcontrols();
 
         display_credits();
 
         // TODO: Convert player input class
 
-        if (playerInput.help) {
+        if (PlayerInput.help) {
             unpress();
-            draw.show_help();
+            Draw.show_help();
             redraw = 1;
         }
 
-        if (playerInput.up) {
+        if (PlayerInput.up) {
             unpress();
 
             if (ptr > 0) {
@@ -126,11 +136,11 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
                 ptr = 3;
             }
 
-            music.play_effect("menumove");
+            Music.play_effect("menumove");
             redraw = 1;
         }
 
-        if (playerInput.down) {
+        if (PlayerInput.down) {
             unpress();
 
             if (ptr < 3) {
@@ -139,11 +149,11 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
                 ptr = 0;
             }
 
-            music.play_effect("menumove");
+            Music.play_effect("menumove");
             redraw = 1;
         }
 
-        if (playerInput.confirm) {
+        if (PlayerInput.confirm) {
             unpress();
 
             if (ptr == 0) { /* User selected "Continue" */
@@ -151,18 +161,21 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
                 bool anyslots = false;
 
                 //TODO: Load saved game
-                //for (auto& sg : savegame) {
-                //    if (sg.num_characters > 0) {
-                //        anyslots = true;
-                //        break;
-                //    }
-                //}
+                for (int i = 0; i < NUMSG; i++) {
+                    s_sgstats sg = SaveGame.get_savegames()[i];
 
-                //if (!anyslots) {
-                //    stop = 2;
-                //} else if (saveload(0) == 1) {
-                //    stop = 1;
-                //}
+                    if (sg.num_characters > 0) {
+                        anyslots = true;
+                        break;
+                    }
+                }
+
+                if (!anyslots) {
+                    result = StartMenuResult::NEW_GAME;
+                    break;
+                } else if (SaveGame.saveload(0) == 1) {
+                    stop = 1;
+                }
 
                 result = StartMenuResult::CONTINUE;
                 break;
@@ -192,9 +205,13 @@ StartMenuResult KGame::start_menu(bool skip_splash) {
 }
 
 bool KGame::startup(void) {
+    strbuf = (char*)malloc(4096);
+
     init_sdl();
-    music.init_music();
+    allocate_textures();
     allocate_credits();
+
+    Music.init_music();
     //TODO: Enable (if necessary) keybaord
     //TODO: Enable (if necessary) sound
     //TODO: Enable (if necessary) timers
@@ -204,7 +221,7 @@ bool KGame::startup(void) {
     //  TODO: set colors of fonts
     //  TODO: create debug mode obstacle textures
     //TODO: Install timers
-    //TODO: Load savegame stats
+    SaveGame.load_sgstats();
     //TODO: Initialize console
     return true;
 }
@@ -289,22 +306,56 @@ bool KGame::init_sdl(void) {
     // https://liballeg.org/stabledocs/en/alleg011.html#set_palette
     // set_palette(pal);
 
+    return true;
+}
+
+void KGame::allocate_textures(void) {
     kfonts = new Texture("fonts.png", renderer);
     misc = new Texture("misc.png", renderer);
     menuptr = new Raster(*misc, 24, 0, 16, 8);
+    upptr = new Raster(*misc, 0, 8, 8, 8);
+    dnptr = new Raster(*misc, 8, 8, 8, 8);
 
-    return true;
+    load_heroes();
+}
+
+void KGame::load_heroes(void) {
+    //frames = (Raster*)malloc(MAXCHRS * MAXFRAMES * sizeof(Raster));
+    Texture* eb = new Texture("uschrs.png", renderer);
+
+    if (!eb) {
+        std::cerr << _("Could not load character graphics!") << std::endl;
+        //TODO: program_death(_("Could not load character graphics!"));
+    }
+
+    for (int party_index = 0; party_index < MAXCHRS; party_index++) {
+        for (int frame_index = 0; frame_index < MAXFRAMES; frame_index++) {
+            frames[party_index][frame_index] = new Raster(*eb, frame_index * 16, party_index * 16, 16, 16);
+        }
+    }
+
+    /* portraits */
+    //TODO:
+    //Texture *faces = new Texture("kqfaces.png", renderer);
+    //for (int player_index = 0; player_index < 4; ++player_index) {
+    //    faces->blitTo(players[player_index].portrait, 0, player_index * 40, 0, 0, 40, 40);
+    //    faces->blitTo(players[player_index + 4].portrait, 40, player_index * 40, 0, 0, 40, 40);
+    //}
 }
 
 void KGame::unpress(void) {
     Uint32 count = SDL_GetTicks();
 
     while (SDL_GetTicks() - count < 200) {
-        playerInput.readcontrols();
+        PlayerInput.readcontrols();
 
-        if (!(playerInput.confirm || playerInput.cancel || playerInput.enter || playerInput.escape || playerInput.up ||
-                playerInput.down || playerInput.right || playerInput.left || playerInput.cheat)) {
+        if (!(PlayerInput.confirm || PlayerInput.cancel || PlayerInput.enter || PlayerInput.escape || PlayerInput.up ||
+                PlayerInput.down || PlayerInput.right || PlayerInput.left || PlayerInput.cheat)) {
             break;
         }
     }
+}
+
+int KGame::get_gold(void) {
+    return gp;
 }

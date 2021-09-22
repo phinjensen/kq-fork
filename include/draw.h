@@ -47,6 +47,7 @@ public:
     void fade(SDL_Color to, int duration);
     void menubox(int x, int y, int width, int height, int color);
     void print_font(int sx, int sy, const std::string& msg, FontColor index);
+    void rectfill(int x, int y, int x2, int y2, int color);
 
     // Specific menus
     void show_help(void);
@@ -80,4 +81,4 @@ private:
     void setting_item(int y, const char* caption, const char* value, FontColor color);
 };
 
-extern KDraw draw;
+extern KDraw Draw;

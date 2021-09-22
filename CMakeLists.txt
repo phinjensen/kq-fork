@@ -42,7 +42,7 @@ set(kq-fork-sources
 	#src/combat.cpp
 	#src/console.cpp
 	src/credits.cpp
-	#src/disk.cpp
+	src/disk.cpp
 	src/draw.cpp
 	#src/effects.cpp
 	#src/enemyc.cpp
@@ -52,7 +52,7 @@ set(kq-fork-sources
   #src/fade.cpp
 	#src/fighter.cpp
 	src/gfx.cpp
-	#src/heroc.cpp
+  #src/heroc.cpp
 	#src/hskill.cpp
 	#src/imgcache.cpp
 	src/input.cpp
@@ -67,12 +67,12 @@ set(kq-fork-sources
 	#src/movement.cpp
 	#src/music_dumb.cpp
   src/music.cpp
-	#src/player.cpp
+	src/player.cpp
 	src/random.cpp
-  #src/res.cpp
+  src/res.cpp
 	#src/selector.cpp
 	#src/setup.cpp
-	#src/sgame.cpp
+	src/sgame.cpp
 	#src/shopmenu.cpp
 	#src/timing.cpp
   src/unix.cpp
@@ -94,6 +94,7 @@ target_link_libraries(kq-fork
   SDL2
   SDL2_image
   SDL2_mixer
+  tinyxml2
   #${ALLEGRO_LIBRARIES}
 	#${LUA_LIBRARY}
 	#${AL_DUMB_LIBRARIES}

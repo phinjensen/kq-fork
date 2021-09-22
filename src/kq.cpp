@@ -11,10 +11,6 @@
 #include "gettext.h"
 #include "random.h"
 
-KMusic music;
-KDraw draw;
-KGame game;
-
 int main(int argc, const char* argv[]) {
     bool game_on, skip_splash;
     size_t i;
@@ -34,7 +30,7 @@ int main(int argc, const char* argv[]) {
         }
     }
 
-    if (!game.startup()) {
+    if (!Game.startup()) {
         return 1;
     }
 
@@ -44,7 +40,7 @@ int main(int argc, const char* argv[]) {
 
     /* While KQ is running (playing or at startup menu) */
     while (game_on) {
-        switch (game.start_menu(skip_splash)) {
+        switch (Game.start_menu(skip_splash)) {
         case StartMenuResult::CONTINUE: /* Continue */
             //TODO: Load savegame and continue instead of quitting
             printf("TODO: Continue game");
@@ -53,7 +49,7 @@ int main(int argc, const char* argv[]) {
 
         case StartMenuResult::NEW_GAME: /* New game */
             //TODO: Change map
-            //game.change_map("starting", 0, 0, 0, 0);
+            //Game.change_map("starting", 0, 0, 0, 0);
             printf("TODO: Start new game");
             game_on = false;
 
@@ -72,6 +68,6 @@ int main(int argc, const char* argv[]) {
         //TODO: The game (lines 990-1032 of kq.cpp)
     }
 
-    game.shutdown();
+    Game.shutdown();
     return EXIT_SUCCESS;
 }

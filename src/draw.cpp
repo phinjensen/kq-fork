@@ -5,6 +5,7 @@
 #include "game.h"
 #include "gettext.h"
 #include "input.h"
+#include "res.h"
 
 const int FONT_WIDTH = 8;
 const int FONT_HEIGHT = 8;
@@ -196,6 +197,13 @@ void KDraw::print_font(int sx, int sy, const std::string& msg, FontColor index) 
     }
 }
 
+void KDraw::rectfill(int x,  int y, int x2, int y2, int color) {
+    //TODO: Figure out what the deal is with the alpha portion of palette colors
+    SDL_SetRenderDrawColor(renderer, pal[color][0] * 4, pal[color][1] * 4, pal[color][2] * 4, 0xFF);
+    SDL_Rect dimensions = { x, y, x2 - x, y2 - y };
+    SDL_RenderFillRect(renderer, &dimensions);
+}
+
 const char* KDraw::decode_utf8(const char* InString, uint32_t* cp) {
     char ch = *InString;
 
@@ -317,20 +325,22 @@ void KDraw::show_help(void) {
     menubox(32 + xofs, 32 + yofs, 30, 20, 0); //, BLUE);
     menubox(xofs, 216 + yofs, 38, 1, 0); //, BLUE);
     print_font(16 + xofs, 224 + yofs, _("Press CONFIRM to exit this screen"), FontColor::NORMAL);
-    setting_item(72, _("Up Key:"), playerInput.getKeyName(playerInput.scancode_up),
+    setting_item(72, _("Up Key:"), PlayerInput.getKeyName(PlayerInput.scancode_up),
                  FontColor::NORMAL);
-    setting_item(80, _("Down Key:"), playerInput.getKeyName(playerInput.scancode_down), FontColor::NORMAL);
-    setting_item(88, _("Left Key:"), playerInput.getKeyName(playerInput.scancode_left), FontColor::NORMAL);
-    setting_item(96, _("Right Key:"), playerInput.getKeyName(playerInput.scancode_right), FontColor::NORMAL);
-    setting_item(104, _("Confirm Key:"), playerInput.getKeyName(playerInput.scancode_confirm), FontColor::NORMAL);
-    setting_item(112, _("Cancel Key:"), playerInput.getKeyName(playerInput.scancode_cancel), FontColor::NORMAL);
-    setting_item(120, _("Menu Key:"), playerInput.getKeyName(playerInput.scancode_enter), FontColor::NORMAL);
-    setting_item(128, _("System Menu Key:"), playerInput.getKeyName(playerInput.scancode_escape), FontColor::NORMAL);
+    setting_item(80, _("Down Key:"), PlayerInput.getKeyName(PlayerInput.scancode_down), FontColor::NORMAL);
+    setting_item(88, _("Left Key:"), PlayerInput.getKeyName(PlayerInput.scancode_left), FontColor::NORMAL);
+    setting_item(96, _("Right Key:"), PlayerInput.getKeyName(PlayerInput.scancode_right), FontColor::NORMAL);
+    setting_item(104, _("Confirm Key:"), PlayerInput.getKeyName(PlayerInput.scancode_confirm), FontColor::NORMAL);
+    setting_item(112, _("Cancel Key:"), PlayerInput.getKeyName(PlayerInput.scancode_cancel), FontColor::NORMAL);
+    setting_item(120, _("Menu Key:"), PlayerInput.getKeyName(PlayerInput.scancode_enter), FontColor::NORMAL);
+    setting_item(128, _("System Menu Key:"), PlayerInput.getKeyName(PlayerInput.scancode_escape), FontColor::NORMAL);
 
-    while (!playerInput.confirm && !playerInput.cancel) {
+    while (!PlayerInput.confirm && !PlayerInput.cancel) {
         render();
-        playerInput.readcontrols();
+        PlayerInput.readcontrols();
     }
 
-    game.unpress();
+    Game.unpress();
 }
+
+KDraw Draw;

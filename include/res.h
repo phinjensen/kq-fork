@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include <allegro.h>
 #include <cstdint>
 
+#include "SDL2/SDL.h"
 #include "enums.h"
 #include "heroc.h"
 
@@ -44,8 +44,7 @@
 /*\}*/
 
 /*! \brief An item */
-struct s_item
-{
+struct s_item {
     char name[17]; /*!< Name of the item */
     uint8_t icon;  /*!< Small icon */
     uint8_t kol;   /*!< Colour to draw?? See hero_init() */
@@ -77,8 +76,7 @@ struct s_item
 };
 
 /*! \brief A spell */
-struct s_spell
-{
+struct s_spell {
     char name[14]; /*!< Name of the spell being used */
     uint8_t icon;  /*!< Picture used in the spell list (which type of spell) */
     char desc[26]; /*!< Description of what the spell is intended to do */
@@ -96,8 +94,7 @@ struct s_spell
 };
 
 /*! \brief A special effect */
-struct s_effect
-{
+struct s_effect {
     uint8_t numf;   /*!< Number of frames within the sprite */
     uint16_t xsize; /*!< Width of each frame */
     uint16_t ysize; /*!< Height of each frame */
@@ -109,8 +106,7 @@ struct s_effect
 };
 
 /*! \brief An encounter */
-struct s_erow
-{
+struct s_erow {
     uint8_t tnum;   /*!< Encounter number in the Encounter table */
     uint8_t lvl;    /*!< Level of monsters */
     uint8_t per;    /*!< When random encounters are specified, this is the cumulative percentage that this one will be
@@ -119,8 +115,7 @@ struct s_erow
 };
 
 /*! \brief An actual battle */
-struct s_encounter
-{
+struct s_encounter {
     uint8_t extra_byte;  /*!< Map where this battle occurs */
     uint8_t extra_byte2; /*!< Zone that triggers this battle */
     uint8_t enc;         /*!< For random encounters, a 1 in enc chance there will not be
@@ -131,7 +126,7 @@ struct s_encounter
     char backimg[20];    /*!< Background image */
 };
 
-extern PALETTE pal;
+extern Uint8 pal[256][4];
 extern s_item items[NUM_ITEMS];
 extern s_spell magic[NUM_SPELLS];
 extern s_effect eff[NUM_EFFECTS];

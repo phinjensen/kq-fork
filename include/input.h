@@ -38,4 +38,4 @@ public:
     //int jbalt, jbctrl, jbenter, jbesc;
 };
 
-extern KPlayerInput playerInput;
+extern KPlayerInput PlayerInput;

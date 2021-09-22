@@ -9,11 +9,10 @@
 using std::string;
 
 /*! \brief Player */
-class KPlayer
-{
+class KPlayer {
     friend class KDisk;
 
-  public:
+public:
     KPlayer();
     uint8_t GetStatValueBySpellType(eSpellType spellType);
 
@@ -98,15 +97,15 @@ class KPlayer
     char res[NUM_RES];           /*!< eResistance: See R_* constants */
     uint8_t eqp[NUM_EQUIPMENT];  /*!< eEquipment: Weapons, armor, etc. equipped */
     uint8_t spells[NUM_SPELLS];  /*!< Known spells */
-                                 /*! \brief Level up information
-                                  * * Item 0, 1 - used to calculate the XP you need for the next level
-                                  * * Item 2 - Boost to your HP/MHP
-                                  * * Item 3 - Boost to your MP/MMP
-                                  * * Items 4..16 - Actually used by player2fighter to adjust your base stats to the level you're on.
-                                  */
+    /*! \brief Level up information
+     * * Item 0, 1 - used to calculate the XP you need for the next level
+     * * Item 2 - Boost to your HP/MHP
+     * * Item 3 - Boost to your MP/MMP
+     * * Items 4..16 - Actually used by player2fighter to adjust your base stats to the level you're on.
+     */
     unsigned short lup[NUM_LUP];
 
-  protected:
+protected:
     uint8_t sts[NUM_SPELL_TYPES]; /*!< eSpellType */
 };
 

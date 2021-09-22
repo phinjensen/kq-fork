@@ -21,7 +21,7 @@
 
 #pragma once
 
-class Raster;
+#include "draw.h"
 
 /*! Allocate memory for credits display */
 void allocate_credits(void);

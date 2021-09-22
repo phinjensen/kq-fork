@@ -117,7 +117,7 @@ void display_credits(void) {
 
     if (ticks > max_ticks) {
         SDL_RenderClear(renderer);
-        draw.print_font((width - 8 * strlen(*cc)) / 2, 42, *cc, FontColor::NORMAL);
+        Draw.print_font((width - 8 * strlen(*cc)) / 2, 42, *cc, FontColor::NORMAL);
 
         /* After each 'max_ticks' number of ticks, increment the current line of
          * credits displayed, looping back to the beginning as needed.
@@ -126,7 +126,7 @@ void display_credits(void) {
             cc = credits;
         }
 
-        draw.print_font((width - 8 * strlen(*cc)) / 2, 10, *cc, FontColor::NORMAL);
+        Draw.print_font((width - 8 * strlen(*cc)) / 2, 10, *cc, FontColor::NORMAL);
         ticks = 0;
     } else {
         ++ticks;
@@ -135,7 +135,7 @@ void display_credits(void) {
     int ease_amount = (max_ticks / 2) - ticks;
     int x0 = (320 - width) / 2;
 
-    draw.setTarget(RenderTarget::MAIN);
+    Draw.setTarget(RenderTarget::MAIN);
 
     for (int i = 0; i < width; ++i) {
         int w, h;
@@ -146,19 +146,19 @@ void display_credits(void) {
         SDL_RenderCopy(renderer, wk, &source, &dest);
     }
 
-    draw.print_font((KQ_SCREEN_W - 8 * strlen(pressf1)) / 2, KQ_SCREEN_H - 30, pressf1, FontColor::NORMAL);
-    draw.render();
+    Draw.print_font((KQ_SCREEN_W - 8 * strlen(pressf1)) / 2, KQ_SCREEN_H - 30, pressf1, FontColor::NORMAL);
+    Draw.render();
 
 #ifdef KQ_CHEATS
     /* Put an un-ignorable cheat message; this should stop
      * PH releasing versions with cheat mode compiled in ;)
      */
     extern int cheat;
-    draw.print_font(double_buffer, 80, 40, cheat ? _("*CHEAT MODE ON*") : _("*CHEAT MODE OFF*"), FGOLD);
+    Draw.print_font(double_buffer, 80, 40, cheat ? _("*CHEAT MODE ON*") : _("*CHEAT MODE OFF*"), FGOLD);
 #endif
 #ifdef DEBUGMODE
     /* TT: Similarly, if we are in debug mode, we should be warned. */
-    draw.print_font(double_buffer, 80, 48, _("*DEBUG MODE ON*"), FGOLD);
+    Draw.print_font(double_buffer, 80, 48, _("*DEBUG MODE ON*"), FGOLD);
 #endif
 }
 
