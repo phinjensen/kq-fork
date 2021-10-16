@@ -42,7 +42,7 @@
 #include "disk.h"
 //#include "draw.h"
 //#include "fade.h"
-#include "game.h"
+#include "kq.h"
 #include "gettext.h"
 //#include "gfx.h"
 //#include "imgcache.h"
@@ -192,18 +192,19 @@ s_sgstats s_sgstats::get_current() {
  * PH 20030914 Now ignores keyboard settings etc in the save file
  * \returns 1 if load succeeded, 0 otherwise
  */
-//int KSaveGame::load_game(void) {
-//    sprintf(strbuf, "sg%d.xml", save_ptr);
-//    Disk.load_game_from_file(kqres(SAVE_DIR, strbuf).c_str());
-//    timer_count = 0;
-//    ksec = 0;
-//    hold_fade = 0;
-//    Game.change_map(Game.GetCurmap(), g_ent[0].tilex, g_ent[0].tiley, g_ent[0].tilex, g_ent[0].tiley);
-//    /* Set music and sound volume */
-//    set_volume(gsvol, -1);
-//    Music.set_music_volume(((float)gmvol) / 250.0);
-//    return 1;
-//}
+int KSaveGame::load_game(void) {
+    sprintf(strbuf, "sg%d.xml", save_ptr);
+    //TODO:
+    //Disk.load_game_from_file(kqres(SAVE_DIR, strbuf).c_str());
+    //timer_count = 0;
+    //ksec = 0;
+    //hold_fade = 0;
+    //Game.change_map(Game.get_curmap(), g_ent[0].tilex, g_ent[0].tiley, g_ent[0].tilex, g_ent[0].tiley);
+    ///* Set music and sound volume */
+    //set_volume(gsvol, -1);
+    //Music.set_music_volume(((float)gmvol) / 250.0);
+    return 1;
+}
 
 /*! \brief Load mini stats
  *
@@ -329,14 +330,13 @@ int KSaveGame::saveload(int am_saving) {
 
             switch (am_saving) {
             case 0: // Load
-                //TODO:
-                //if (savegames[save_ptr].num_characters != 0) {
-                //    if (load_game() == 1) {
-                //        stop = 2;
-                //    } else {
-                //        stop = 1;
-                //    }
-                //}
+                if (savegames[save_ptr].num_characters != 0) {
+                    if (load_game() == 1) {
+                        stop = 2;
+                    } else {
+                        stop = 1;
+                    }
+                }
 
                 break;
 

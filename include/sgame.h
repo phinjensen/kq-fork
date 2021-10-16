@@ -50,7 +50,7 @@ public:
 protected:
     void show_sgstats(int);
     //int save_game(void);
-    //int load_game(void);
+    int load_game(void);
     //void delete_game(void);
     //int confirm_action(void);
 

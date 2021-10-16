@@ -40,15 +40,13 @@ using namespace tinyxml2;
 #include "tmx_tileset.h"
 #include "zone.h"
 
-class tmx_layer
-{
-  public:
+class tmx_layer {
+public:
     tmx_layer(int w, int h)
         : width(w)
         , height(h)
         , size(w * h)
-        , data(new uint32_t[size])
-    {
+        , data(new uint32_t[size]) {
     }
     string name;
     const int width;
@@ -57,9 +55,8 @@ class tmx_layer
     unique_ptr<uint32_t[]> data;
 };
 
-class tmx_map
-{
-  public:
+class tmx_map {
+public:
     tmx_map();
     string name;
     int map_no;
@@ -130,12 +127,11 @@ class tmx_map
     const KTmxTileset& find_tileset(const string&) const;
 };
 
-class KTiledMap
-{
-  public:
+class KTiledMap {
+public:
     void load_tmx(const string&);
 
-  private:
+private:
     tmx_map load_tmx_map(XMLElement const* root);
     XMLElement const* find_tmx_element(XMLElement const*, const char*, const char*);
     KBounds load_tmx_bounds(XMLElement const*);

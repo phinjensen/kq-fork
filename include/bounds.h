@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include <allegro.h>
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -46,9 +45,8 @@ struct PACKFILE;
  * \author TT
  * \date 20060710
  */
-struct KBound
-{
-  public:
+struct KBound {
+public:
     int left;    /*!< Left edge of the bounding box */
     int top;     /*!< Top edge of the bounding box */
     int right;   /*!< Right edge of the bounding box */
@@ -64,14 +62,11 @@ struct KBound
  * \author OC
  * \date 20101017
  */
-class KBounds
-{
-  public:
-    KBounds()
-    {
+class KBounds {
+public:
+    KBounds() {
     }
-    ~KBounds()
-    {
+    ~KBounds() {
     }
 
     // Add a new bound to the map. Returns true on success, or false on failure.
@@ -81,8 +76,7 @@ class KBounds
     // invalid, returns null.
     shared_ptr<KBound> GetBound(size_t index);
 
-    size_t Size()
-    {
+    size_t Size() {
         return m_bounds.size();
     }
 
@@ -98,6 +92,6 @@ class KBounds
      */
     bool IsBound(size_t& outIndex, int left, int top, int right, int bottom) const;
 
-  protected:
+protected:
     vector<shared_ptr<KBound>> m_bounds;
 };

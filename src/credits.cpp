@@ -31,7 +31,7 @@
 #include "credits.h"
 #include "constants.h"
 #include "draw.h"
-#include "game.h"
+#include "kq.h"
 #include "gettext.h"
 #include "gfx.h"
 #include <string>

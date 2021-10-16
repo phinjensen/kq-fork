@@ -26,13 +26,12 @@
 #define NUMSHOPS 50
 #define SHOPITEMS 12
 
-void do_inn_effects(int);
-void draw_shopgold(void);
-void inn(const char*, uint32_t, int);
-int shop(int);
+//void do_inn_effects(int);
+//void draw_shopgold(void);
+//void inn(const char*, uint32_t, int);
+//int shop(int);
 
-struct s_shop
-{
+struct s_shop {
     char name[40];                     /* Name of this shop */
     uint16_t items[SHOPITEMS];         /* A list of items in this shop */
     uint16_t items_current[SHOPITEMS]; /* Quantity of this type of item */

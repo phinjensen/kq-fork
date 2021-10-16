@@ -30,6 +30,7 @@
 #include "disk.h"
 //#include "bounds.h"
 //#include "heroc.h"
+#include "kq.h"
 //#include "markers.h"
 #include "platform.h"
 #include "random.h"
@@ -160,217 +161,217 @@ vector<int> KDisk::parse_list(const char* str) {
     return list;
 }
 
-//int KDisk::load_resistances_xml(KPlayer* s, XMLElement* node) {
-//    std::fill(std::begin(s->res), std::end(s->res), 0);
-//    XMLElement* resistances = node->FirstChildElement(TAG_RESISTANCES);
-//
-//    if (resistances) {
-//        auto values = parse_list(resistances->FirstChild()->Value());
-//
-//        if (!values.empty()) {
-//            // Gave some, has to be the right number of elements
-//            if (values.size() == NUM_RES) {
-//                copy(values.begin(), values.end(), s->res);
-//            } else {
-//                TRACE("Wrong number of resistances, expected %d and got %zu", NUM_RES, values.size());
-//                Game.program_death("Error loading XML");
-//            }
-//        }
-//    }
-//
-//    return 0;
-//}
-//
-//int KDisk::load_spelltypes_xml(KPlayer* s, XMLElement* node) {
-//    std::fill(std::begin(s->sts), std::end(s->sts), 0);
-//    XMLElement* spelltypes = node->FirstChildElement(TAG_SPELL_TYPES);
-//
-//    if (spelltypes) {
-//        auto values = parse_list(spelltypes->FirstChild()->Value());
-//
-//        if (!values.empty()) {
-//            if (values.size() == NUM_SPELL_TYPES) {
-//                copy(values.begin(), values.end(), s->sts);
-//            } else {
-//                TRACE("Wrong number of spelltypes, expected %d and got %zu", NUM_SPELL_TYPES, values.size());
-//                Game.program_death("Error loading XML");
-//            }
-//        }
-//    }
-//
-//    return 0;
-//}
-//
-//int KDisk::load_spells_xml(KPlayer* s, XMLElement* node) {
-//    std::fill(std::begin(s->spells), std::end(s->spells), 0);
-//    XMLElement* spells = node->FirstChildElement(TAG_SPELLS);
-//
-//    if (spells) {
-//        auto values = parse_list(spells->FirstChild()->Value());
-//
-//        if (!values.empty()) {
-//            if (values.size() == NUM_SPELLS) {
-//                copy(values.begin(), values.end(), s->spells);
-//            } else {
-//                TRACE("Wrong number of spells, expected %d and got %zu", NUM_SPELLS, values.size());
-//                Game.program_death("Error loading XML");
-//            }
-//        }
-//    }
-//
-//    return 0;
-//}
-//
-//int KDisk::load_equipment_xml(KPlayer* s, XMLElement* node) {
-//    std::fill(std::begin(s->eqp), std::end(s->eqp), 0);
-//    XMLElement* eqp = node->FirstChildElement(TAG_EQUIPMENT);
-//
-//    if (eqp) {
-//        auto values = parse_list(eqp->FirstChild()->Value());
-//
-//        if (!values.empty()) {
-//            if (values.size() == NUM_EQUIPMENT) {
-//                copy(values.begin(), values.end(), s->eqp);
-//            } else {
-//                TRACE("Wrong number of equipment, expected %d and got %zu", NUM_EQUIPMENT, values.size());
-//                Game.program_death("Error loading XML");
-//            }
-//        }
-//    }
-//
-//    return 0;
-//}
-//
-//int KDisk::load_attributes_xml(KPlayer* s, XMLElement* node) {
-//    XMLElement* attributes = node->FirstChildElement(TAG_ATTRIBUTES);
-//
-//    if (attributes && !attributes->NoChildren()) {
-//        auto vals = parse_list(attributes->FirstChild()->Value());
-//        copy(vals.begin(), vals.end(), s->stats);
-//        return 0;
-//    } else {
-//        // The attribute list was not formatted correctly
-//        return 1;
-//    }
-//
-//    /*XMLElement *attributes = node->FirstChildElement(TAG_ATTRIBUTES);
-//    if (attributes)
-//    {
-//        for (auto property : children(attributes, TAG_PROPERTY))
-//        {
-//            if (property->Attribute("name", "str"))
-//            {
-//                s->stats[eStat::Strength] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "agi"))
-//            {
-//                s->stats[eStat::Agility] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "vit"))
-//            {
-//                s->stats[eStat::Vitality] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "int"))
-//            {
-//                s->stats[eStat::Intellect] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "sag"))
-//            {
-//                s->stats[eStat::Sagacity] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "spd"))
-//            {
-//                s->stats[eStat::Speed] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "aur"))
-//            {
-//                s->stats[eStat::Aura] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "spi"))
-//            {
-//                s->stats[eStat::Spirit] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "att"))
-//            {
-//                s->stats[eStat::Attack] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "hit"))
-//            {
-//                s->stats[eStat::Hit] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "def"))
-//            {
-//                s->stats[eStat::Defense] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "evd"))
-//            {
-//                s->stats[eStat::Evade] = property->IntAttribute("value");
-//            }
-//            else if (property->Attribute("name", "mag"))
-//            {
-//                s->stats[eStat::MagicDefense] = property->IntAttribute("value");
-//            }
-//        }
-//    }
-//    return 0;*/
-//}
-//
-//int KDisk::load_core_properties_xml(KPlayer* s, XMLElement* node) {
-//    XMLElement* properties = node->FirstChildElement(TAG_PROPERTIES);
-//
-//    if (properties) {
-//        for (auto property : children(properties, TAG_PROPERTY)) {
-//            if (property->Attribute("name", "name")) {
-//                s->name = property->Attribute("value");
-//            } else if (property->Attribute("name", "xp")) {
-//                s->xp = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "next")) {
-//                s->next = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "lvl")) {
-//                s->lvl = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "mrp")) {
-//                s->mrp = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "hp")) {
-//                s->hp = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "mhp")) {
-//                s->mhp = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "mp")) {
-//                s->mp = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "mmp")) {
-//                s->mmp = property->IntAttribute("value");
-//            }
-//        }
-//    } else {
-//        Game.program_death("Core properties missing from XML");
-//    }
-//
-//    return 0;
-//}
-//
-//int KDisk::load_lup_xml(KPlayer* s, XMLElement* node) {
-//    XMLElement* elem = node->FirstChildElement(TAG_LEVEL_UP);
-//
-//    if (elem && !elem->NoChildren()) {
-//        auto vals = parse_list(elem->FirstChild()->Value());
-//        copy(vals.begin(), vals.end(), s->lup);
-//        return 0;
-//    } else {
-//        // ???
-//        return 1;
-//    }
-//}
-//
-//int KDisk::load_s_player_xml(KPlayer* s, XMLElement* node) {
-//    load_core_properties_xml(s, node);
-//    load_attributes_xml(s, node);
-//    load_resistances_xml(s, node);
-//    load_spelltypes_xml(s, node);
-//    load_spells_xml(s, node);
-//    load_equipment_xml(s, node);
-//    load_lup_xml(s, node);
-//    return 0;
-//}
-//
+int KDisk::load_resistances_xml(KPlayer* s, XMLElement* node) {
+    std::fill(std::begin(s->res), std::end(s->res), 0);
+    XMLElement* resistances = node->FirstChildElement(TAG_RESISTANCES);
+
+    if (resistances) {
+        auto values = parse_list(resistances->FirstChild()->Value());
+
+        if (!values.empty()) {
+            // Gave some, has to be the right number of elements
+            if (values.size() == NUM_RES) {
+                copy(values.begin(), values.end(), s->res);
+            } else {
+                //TODO: TRACE("Wrong number of resistances, expected %d and got %zu", NUM_RES, values.size());
+                Game.program_death("Error loading XML");
+            }
+        }
+    }
+
+    return 0;
+}
+
+int KDisk::load_spelltypes_xml(KPlayer* s, XMLElement* node) {
+    std::fill(std::begin(s->sts), std::end(s->sts), 0);
+    XMLElement* spelltypes = node->FirstChildElement(TAG_SPELL_TYPES);
+
+    if (spelltypes) {
+        auto values = parse_list(spelltypes->FirstChild()->Value());
+
+        if (!values.empty()) {
+            if (values.size() == NUM_SPELL_TYPES) {
+                copy(values.begin(), values.end(), s->sts);
+            } else {
+                //TODO: TRACE("Wrong number of spelltypes, expected %d and got %zu", NUM_SPELL_TYPES, values.size());
+                Game.program_death("Error loading XML");
+            }
+        }
+    }
+
+    return 0;
+}
+
+int KDisk::load_spells_xml(KPlayer* s, XMLElement* node) {
+    std::fill(std::begin(s->spells), std::end(s->spells), 0);
+    XMLElement* spells = node->FirstChildElement(TAG_SPELLS);
+
+    if (spells) {
+        auto values = parse_list(spells->FirstChild()->Value());
+
+        if (!values.empty()) {
+            if (values.size() == NUM_SPELLS) {
+                copy(values.begin(), values.end(), s->spells);
+            } else {
+                //TODO: TRACE("Wrong number of spells, expected %d and got %zu", NUM_SPELLS, values.size());
+                Game.program_death("Error loading XML");
+            }
+        }
+    }
+
+    return 0;
+}
+
+int KDisk::load_equipment_xml(KPlayer* s, XMLElement* node) {
+    std::fill(std::begin(s->eqp), std::end(s->eqp), 0);
+    XMLElement* eqp = node->FirstChildElement(TAG_EQUIPMENT);
+
+    if (eqp) {
+        auto values = parse_list(eqp->FirstChild()->Value());
+
+        if (!values.empty()) {
+            if (values.size() == NUM_EQUIPMENT) {
+                copy(values.begin(), values.end(), s->eqp);
+            } else {
+                //TODO: TRACE("Wrong number of equipment, expected %d and got %zu", NUM_EQUIPMENT, values.size());
+                Game.program_death("Error loading XML");
+            }
+        }
+    }
+
+    return 0;
+}
+
+int KDisk::load_attributes_xml(KPlayer* s, XMLElement* node) {
+    XMLElement* attributes = node->FirstChildElement(TAG_ATTRIBUTES);
+
+    if (attributes && !attributes->NoChildren()) {
+        auto vals = parse_list(attributes->FirstChild()->Value());
+        copy(vals.begin(), vals.end(), s->stats);
+        return 0;
+    } else {
+        // The attribute list was not formatted correctly
+        return 1;
+    }
+
+    /*XMLElement *attributes = node->FirstChildElement(TAG_ATTRIBUTES);
+    if (attributes)
+    {
+        for (auto property : children(attributes, TAG_PROPERTY))
+        {
+            if (property->Attribute("name", "str"))
+            {
+                s->stats[eStat::Strength] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "agi"))
+            {
+                s->stats[eStat::Agility] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "vit"))
+            {
+                s->stats[eStat::Vitality] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "int"))
+            {
+                s->stats[eStat::Intellect] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "sag"))
+            {
+                s->stats[eStat::Sagacity] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "spd"))
+            {
+                s->stats[eStat::Speed] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "aur"))
+            {
+                s->stats[eStat::Aura] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "spi"))
+            {
+                s->stats[eStat::Spirit] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "att"))
+            {
+                s->stats[eStat::Attack] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "hit"))
+            {
+                s->stats[eStat::Hit] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "def"))
+            {
+                s->stats[eStat::Defense] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "evd"))
+            {
+                s->stats[eStat::Evade] = property->IntAttribute("value");
+            }
+            else if (property->Attribute("name", "mag"))
+            {
+                s->stats[eStat::MagicDefense] = property->IntAttribute("value");
+            }
+        }
+    }
+    return 0;*/
+}
+
+int KDisk::load_core_properties_xml(KPlayer* s, XMLElement* node) {
+    XMLElement* properties = node->FirstChildElement(TAG_PROPERTIES);
+
+    if (properties) {
+        for (auto property : children(properties, TAG_PROPERTY)) {
+            if (property->Attribute("name", "name")) {
+                s->name = property->Attribute("value");
+            } else if (property->Attribute("name", "xp")) {
+                s->xp = property->IntAttribute("value");
+            } else if (property->Attribute("name", "next")) {
+                s->next = property->IntAttribute("value");
+            } else if (property->Attribute("name", "lvl")) {
+                s->lvl = property->IntAttribute("value");
+            } else if (property->Attribute("name", "mrp")) {
+                s->mrp = property->IntAttribute("value");
+            } else if (property->Attribute("name", "hp")) {
+                s->hp = property->IntAttribute("value");
+            } else if (property->Attribute("name", "mhp")) {
+                s->mhp = property->IntAttribute("value");
+            } else if (property->Attribute("name", "mp")) {
+                s->mp = property->IntAttribute("value");
+            } else if (property->Attribute("name", "mmp")) {
+                s->mmp = property->IntAttribute("value");
+            }
+        }
+    } else {
+        Game.program_death("Core properties missing from XML");
+    }
+
+    return 0;
+}
+
+int KDisk::load_lup_xml(KPlayer* s, XMLElement* node) {
+    XMLElement* elem = node->FirstChildElement(TAG_LEVEL_UP);
+
+    if (elem && !elem->NoChildren()) {
+        auto vals = parse_list(elem->FirstChild()->Value());
+        copy(vals.begin(), vals.end(), s->lup);
+        return 0;
+    } else {
+        // ???
+        return 1;
+    }
+}
+
+int KDisk::load_s_player_xml(KPlayer* s, XMLElement* node) {
+    load_core_properties_xml(s, node);
+    load_attributes_xml(s, node);
+    load_resistances_xml(s, node);
+    load_spelltypes_xml(s, node);
+    load_spells_xml(s, node);
+    load_equipment_xml(s, node);
+    load_lup_xml(s, node);
+    return 0;
+}
+
 //// Helper function - insert a property element.
 //template<typename T> static XMLElement* addprop(XMLElement* parent, const char* name, T value) {
 //    XMLElement* property = parent->GetDocument()->NewElement("property");
@@ -456,19 +457,19 @@ vector<int> KDisk::parse_list(const char* str) {
 //    node->InsertEndChild(elem);
 //    return 0;
 //}
-//
-//struct cstring_less {
-//    bool operator()(const char* const& a, const char* const& b) const {
-//        return strcmp(a, b) < 0;
-//    }
-//};
-//
-//static const std::map<const char*, ePIDX, cstring_less> id_lookup = { { "sensar", SENSAR },     { "sarina", SARINA },
-//    { "corin", CORIN },       { "ajathar", AJATHAR },
-//    { "casandra", CASANDRA }, { "temmin", TEMMIN },
-//    { "ayla", AYLA },         { "noslom", NOSLOM }
-//};
-//
+
+struct cstring_less {
+    bool operator()(const char* const& a, const char* const& b) const {
+        return strcmp(a, b) < 0;
+    }
+};
+
+static const std::map<const char*, ePIDX, cstring_less> id_lookup = { { "sensar", SENSAR },     { "sarina", SARINA },
+    { "corin", CORIN },       { "ajathar", AJATHAR },
+    { "casandra", CASANDRA }, { "temmin", TEMMIN },
+    { "ayla", AYLA },         { "noslom", NOSLOM }
+};
+
 ///** Store player inside a node that you supply.
 // */
 //int KDisk::save_player_xml(const KPlayer* s, XMLElement* node) {
@@ -507,29 +508,29 @@ vector<int> KDisk::parse_list(const char* str) {
 //    store_lup_xml(s, hero);
 //    return 0;
 //}
-//
-//int KDisk::load_players_xml(XMLElement* root) {
-//    XMLElement* heroes_elem = root->FirstChildElement(TAG_HEROES);
-//
-//    if (heroes_elem) {
-//        for (auto hero : children(heroes_elem, TAG_HERO)) {
-//            const char* attr = hero->Attribute("id");
-//
-//            if (attr) {
-//                auto it = id_lookup.find(attr);
-//
-//                if (it != std::end(id_lookup)) {
-//                    load_s_player_xml(&party[it->second], hero);
-//                }
-//            }
-//        }
-//    } else {
-//        Game.program_death("Error loading heroes");
-//    }
-//
-//    return 1;
-//}
-//
+
+int KDisk::load_players_xml(XMLElement* root) {
+    XMLElement* heroes_elem = root->FirstChildElement(TAG_HEROES);
+
+    if (heroes_elem) {
+        for (auto hero : children(heroes_elem, TAG_HERO)) {
+            const char* attr = hero->Attribute("id");
+
+            if (attr) {
+                auto it = id_lookup.find(attr);
+
+                if (it != std::end(id_lookup)) {
+                    load_s_player_xml(&party[it->second], hero);
+                }
+            }
+        }
+    } else {
+        Game.program_death("Error loading heroes");
+    }
+
+    return 1;
+}
+
 //int KDisk::save_players_xml(XMLElement* node) {
 //    XMLDocument* doc = node->GetDocument();
 //    XMLElement* hs = doc->NewElement(TAG_HEROES);
@@ -555,30 +556,30 @@ vector<int> KDisk::parse_list(const char* str) {
 //    return 1;
 //}
 //
-//int KDisk::load_treasures_xml(XMLElement* node) {
-//    auto startp = std::begin(treasure);
-//    auto endp = std::end(treasure);
-//    std::fill(startp, endp, 0);
-//    XMLElement* elem = node->FirstChildElement(TAG_TREASURES);
-//
-//    if (elem && !elem->NoChildren()) {
-//        auto vs = parse_list(elem->FirstChild()->Value());
-//        auto it = startp;
-//
-//        for (auto& v : vs) {
-//            if (it == endp) {
-//                // Too much data supplied...
-//                Game.program_death(
-//                    "Error while loading treasures: More entries for treasures in saved game than there should be!");
-//            }
-//
-//            *it++ = v;
-//        }
-//    }
-//
-//    return 1;
-//}
-//
+int KDisk::load_treasures_xml(XMLElement* node) {
+    auto startp = std::begin(treasure);
+    auto endp = std::end(treasure);
+    std::fill(startp, endp, 0);
+    XMLElement* elem = node->FirstChildElement(TAG_TREASURES);
+
+    if (elem && !elem->NoChildren()) {
+        auto vs = parse_list(elem->FirstChild()->Value());
+        auto it = startp;
+
+        for (auto& v : vs) {
+            if (it == endp) {
+                // Too much data supplied...
+                Game.program_death(
+                    "Error while loading treasures: More entries for treasures in saved game than there should be!");
+            }
+
+            *it++ = v;
+        }
+    }
+
+    return 1;
+}
+
 //int KDisk::save_progress_xml(XMLElement* node) {
 //    auto startp = std::begin(progress);
 //    auto endp = std::end(progress);
@@ -592,29 +593,29 @@ vector<int> KDisk::parse_list(const char* str) {
 //    return 1;
 //}
 //
-//int KDisk::load_progress_xml(XMLElement* node) {
-//    auto startp = std::begin(progress);
-//    auto endp = std::end(progress);
-//    std::fill(startp, endp, 0);
-//    XMLElement* elem = node->FirstChildElement(TAG_PROGRESS);
-//
-//    if (elem && !elem->NoChildren()) {
-//        auto vs = parse_list(elem->FirstChild()->Value());
-//        auto it = startp;
-//
-//        for (auto& v : vs) {
-//            if (it == endp) {
-//                // Too much data supplied...
-//                Game.program_death("Too much data supplied");
-//            }
-//
-//            *it++ = v;
-//        }
-//    }
-//
-//    return 1;
-//}
-//
+int KDisk::load_progress_xml(XMLElement* node) {
+    auto startp = std::begin(progress);
+    auto endp = std::end(progress);
+    std::fill(startp, endp, 0);
+    XMLElement* elem = node->FirstChildElement(TAG_PROGRESS);
+
+    if (elem && !elem->NoChildren()) {
+        auto vs = parse_list(elem->FirstChild()->Value());
+        auto it = startp;
+
+        for (auto& v : vs) {
+            if (it == endp) {
+                // Too much data supplied...
+                Game.program_death("Too much data supplied");
+            }
+
+            *it++ = v;
+        }
+    }
+
+    return 1;
+}
+
 //int KDisk::save_save_spells_xml(XMLElement* node) {
 //    auto startp = std::begin(save_spells);
 //    auto endp = std::end(save_spells);
@@ -628,29 +629,29 @@ vector<int> KDisk::parse_list(const char* str) {
 //    return 1;
 //}
 //
-//int KDisk::load_save_spells_xml(XMLElement* node) {
-//    auto startp = std::begin(save_spells);
-//    auto endp = std::end(save_spells);
-//    std::fill(startp, endp, 0);
-//    XMLElement* elem = node->FirstChildElement(TAG_SAVE_SPELLS);
-//
-//    if (elem && !elem->NoChildren()) {
-//        auto vs = parse_list(elem->FirstChild()->Value());
-//        auto it = startp;
-//
-//        for (auto& v : vs) {
-//            if (it == endp) {
-//                // Too much data supplied...
-//                Game.program_death("Too much data supplied");
-//            }
-//
-//            *it++ = v;
-//        }
-//    }
-//
-//    return 1;
-//}
-//
+int KDisk::load_save_spells_xml(XMLElement* node) {
+    auto startp = std::begin(save_spells);
+    auto endp = std::end(save_spells);
+    std::fill(startp, endp, 0);
+    XMLElement* elem = node->FirstChildElement(TAG_SAVE_SPELLS);
+
+    if (elem && !elem->NoChildren()) {
+        auto vs = parse_list(elem->FirstChild()->Value());
+        auto it = startp;
+
+        for (auto& v : vs) {
+            if (it == endp) {
+                // Too much data supplied...
+                Game.program_death("Too much data supplied");
+            }
+
+            *it++ = v;
+        }
+    }
+
+    return 1;
+}
+
 //int KDisk::save_specials_xml(XMLElement* node) {
 //    auto startp = std::begin(player_special_items);
 //    auto endp = std::end(player_special_items);
@@ -664,29 +665,29 @@ vector<int> KDisk::parse_list(const char* str) {
 //    return 1;
 //}
 //
-//int KDisk::load_specials_xml(XMLElement* node) {
-//    auto startp = std::begin(player_special_items);
-//    auto endp = std::end(player_special_items);
-//    std::fill(startp, endp, 0);
-//    XMLElement* elem = node->FirstChildElement(TAG_SPECIAL);
-//
-//    if (elem && !elem->NoChildren()) {
-//        auto vs = parse_list(elem->FirstChild()->Value());
-//        auto it = startp;
-//
-//        for (auto& v : vs) {
-//            if (it == endp) {
-//                // Too much data supplied...
-//                Game.program_death("Too much data supplied");
-//            }
-//
-//            *it++ = v;
-//        }
-//    }
-//
-//    return 1;
-//}
-//
+int KDisk::load_specials_xml(XMLElement* node) {
+    auto startp = std::begin(player_special_items);
+    auto endp = std::end(player_special_items);
+    std::fill(startp, endp, 0);
+    XMLElement* elem = node->FirstChildElement(TAG_SPECIAL);
+
+    if (elem && !elem->NoChildren()) {
+        auto vs = parse_list(elem->FirstChild()->Value());
+        auto it = startp;
+
+        for (auto& v : vs) {
+            if (it == endp) {
+                // Too much data supplied...
+                Game.program_death("Too much data supplied");
+            }
+
+            *it++ = v;
+        }
+    }
+
+    return 1;
+}
+
 //int KDisk::save_global_inventory_xml(XMLElement* node) {
 //    XMLDocument* doc = node->GetDocument();
 //    XMLElement* inventory = doc->NewElement(TAG_INVENTORY);
@@ -704,27 +705,27 @@ vector<int> KDisk::parse_list(const char* str) {
 //    return 1;
 //}
 //
-//int KDisk::load_global_inventory_xml(XMLElement* node) {
-//    for (auto& item : g_inv) {
-//        item.item = 0;
-//        item.quantity = 0;
-//    }
-//
-//    XMLElement* inventory = node->FirstChildElement(TAG_INVENTORY);
-//
-//    if (inventory) {
-//        auto gptr = g_inv;
-//
-//        for (auto item : children(inventory, TAG_ITEM)) {
-//            gptr->item = item->IntAttribute("id");
-//            gptr->quantity = item->IntAttribute("quantity");
-//            ++gptr;
-//        }
-//    }
-//
-//    return 0;
-//}
-//
+int KDisk::load_global_inventory_xml(XMLElement* node) {
+    for (auto& item : g_inv) {
+        item.item = 0;
+        item.quantity = 0;
+    }
+
+    XMLElement* inventory = node->FirstChildElement(TAG_INVENTORY);
+
+    if (inventory) {
+        auto gptr = g_inv;
+
+        for (auto item : children(inventory, TAG_ITEM)) {
+            gptr->item = item->IntAttribute("id");
+            gptr->quantity = item->IntAttribute("quantity");
+            ++gptr;
+        }
+    }
+
+    return 0;
+}
+
 //int KDisk::save_shop_info_xml(XMLElement* node) {
 //    bool visited = false;
 //
@@ -786,7 +787,7 @@ vector<int> KDisk::parse_list(const char* str) {
 //
 //    return 1;
 //}
-//
+
 //int KDisk::save_general_props_xml(XMLElement* node) {
 //    XMLElement* properties = node->GetDocument()->NewElement(TAG_PROPERTIES);
 //    s_sgstats stats = s_sgstats::get_current();
@@ -815,52 +816,52 @@ vector<int> KDisk::parse_list(const char* str) {
 //    node->InsertEndChild(properties);
 //    return 1;
 //}
-//
-//int KDisk::load_general_props_xml(XMLElement* node) {
-//    XMLElement* properties = node->FirstChildElement(TAG_PROPERTIES);
-//
-//    if (properties) {
-//        for (auto property : children(properties, TAG_PROPERTY)) {
-//            if (property->Attribute("name", "gold")) {
-//                Game.SetGold(property->IntAttribute("value"));
-//            } else if (property->Attribute("name", "random-state")) {
-//                std::string state = property->Attribute("value");
-//                kqrandom->kq_set_random_state(state);
-//            } else if (property->Attribute("name", "time")) {
-//                int tt = property->IntAttribute("value");
-//                kmin = tt % 60;
-//                khr = (tt - kmin) / 60;
-//            } else if (property->Attribute("name", "mapname")) {
-//                Game.SetCurmap(property->Attribute("value"));
-//            } else if (property->Attribute("name", "mapx")) {
-//                g_ent[0].tilex = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "mapy")) {
-//                g_ent[0].tiley = property->IntAttribute("value");
-//            } else if (property->Attribute("name", "party")) {
-//                auto pps = parse_list(property->Attribute("value"));
-//                auto it = pps.begin();
-//                numchrs = 0;
-//
-//                for (int i = 0; i < MAXCHRS; ++i) {
-//                    if (it != pps.end()) {
-//                        pidx[i] = static_cast<ePIDX>(*it++);
-//                        g_ent[i].eid = pidx[i];
-//                        g_ent[i].active = 1;
-//                        ++numchrs;
-//                    } else {
-//                        pidx[i] = PIDX_UNDEFINED;
-//                        g_ent[i].active = 0;
-//                    }
-//                }
-//            }
-//
-//            // Don't need to restore anything from <sgstats>
-//        }
-//    }
-//
-//    return 0;
-//}
-//
+
+int KDisk::load_general_props_xml(XMLElement* node) {
+    XMLElement* properties = node->FirstChildElement(TAG_PROPERTIES);
+
+    if (properties) {
+        for (auto property : children(properties, TAG_PROPERTY)) {
+            if (property->Attribute("name", "gold")) {
+                Game.set_gold(property->IntAttribute("value"));
+            } else if (property->Attribute("name", "random-state")) {
+                std::string state = property->Attribute("value");
+                kqrandom->kq_set_random_state(state);
+            } else if (property->Attribute("name", "time")) {
+                int tt = property->IntAttribute("value");
+                kmin = tt % 60;
+                khr = (tt - kmin) / 60;
+            } else if (property->Attribute("name", "mapname")) {
+                Game.set_curmap(property->Attribute("value"));
+            } else if (property->Attribute("name", "mapx")) {
+                g_ent[0].tilex = property->IntAttribute("value");
+            } else if (property->Attribute("name", "mapy")) {
+                g_ent[0].tiley = property->IntAttribute("value");
+            } else if (property->Attribute("name", "party")) {
+                auto pps = parse_list(property->Attribute("value"));
+                auto it = pps.begin();
+                numchrs = 0;
+
+                for (int i = 0; i < MAXCHRS; ++i) {
+                    if (it != pps.end()) {
+                        pidx[i] = static_cast<ePIDX>(*it++);
+                        g_ent[i].eid = pidx[i];
+                        g_ent[i].active = 1;
+                        ++numchrs;
+                    } else {
+                        pidx[i] = PIDX_UNDEFINED;
+                        g_ent[i].active = 0;
+                    }
+                }
+            }
+
+            // Don't need to restore anything from <sgstats>
+        }
+    }
+
+    return 0;
+}
+
 //int KDisk::save_game_xml(XMLElement* node) {
 //    node->SetAttribute("version", "93");
 //    save_general_props_xml(node);
@@ -883,37 +884,38 @@ vector<int> KDisk::parse_list(const char* str) {
 //    doc.SaveFile(filename);
 //    return k;
 //}
-//
-//int KDisk::load_game_xml(XMLElement* node) {
-//    load_general_props_xml(node);
-//    load_players_xml(node);
-//    load_treasures_xml(node);
-//    load_progress_xml(node);
-//    load_save_spells_xml(node);
-//    load_specials_xml(node);
-//    load_global_inventory_xml(node);
-//    load_shop_info_xml(node);
-//    return 1;
-//}
-//
-//int KDisk::load_game_from_file(const char* filename) {
-//    XMLDocument doc;
-//    doc.LoadFile(filename);
-//
-//    if (!doc.Error()) {
-//        return load_game_xml(doc.RootElement());
-//    } else {
+
+int KDisk::load_game_xml(XMLElement* node) {
+    load_general_props_xml(node);
+    load_players_xml(node);
+    load_treasures_xml(node);
+    load_progress_xml(node);
+    load_save_spells_xml(node);
+    load_specials_xml(node);
+    load_global_inventory_xml(node);
+    //TODO: load_shop_info_xml(node);
+    return 1;
+}
+
+int KDisk::load_game_from_file(const char* filename) {
+    XMLDocument doc;
+    doc.LoadFile(filename);
+
+    if (!doc.Error()) {
+        return load_game_xml(doc.RootElement());
+    } else {
+        //TODO: Trace function
 //#ifdef WIN32
 //        TRACE("%s(%d)\n%s\n%s", doc.ErrorName(), doc.ErrorID(), doc.GetErrorStr1(), doc.GetErrorStr2());
 //#else
 //        TRACE("%s(%d)\n%s", doc.ErrorName(), doc.ErrorID(), doc.ErrorStr());
 //#endif // WIN32
-//        Game.program_death("Unable to load XML file");
-//    }
-//
-//    return 0;
-//}
-//
+        Game.program_death("Unable to load XML file");
+    }
+
+    return 0;
+}
+
 //void KDisk::printprop(tinyxml2::XMLPrinter& out, const string& name, int value) {
 //    out.OpenElement(TAG_PROPERTY);
 //    out.PushAttribute("name", name.c_str());

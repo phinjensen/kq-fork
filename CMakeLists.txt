@@ -37,8 +37,8 @@ set(KQ_DEBUGGING 1 CACHE BOOL "Features for debugging the game")
 
 set(kq-fork-sources
   #src/anim_sequence.cpp
-	#src/animation.cpp
-	#src/bounds.cpp
+  #src/animation.cpp
+	src/bounds.cpp
 	#src/combat.cpp
 	#src/console.cpp
 	src/credits.cpp
@@ -54,14 +54,14 @@ set(kq-fork-sources
 	src/gfx.cpp
   #src/heroc.cpp
 	#src/hskill.cpp
-	#src/imgcache.cpp
+  #src/imgcache.cpp
 	src/input.cpp
 	#src/intrface.cpp
 	#src/itemmenu.cpp
-  src/game.cpp
+  #src/game.cpp
 	src/kq.cpp
   #src/magic.cpp
-	#src/markers.cpp
+	src/markers.cpp
 	#src/masmenu.cpp
 	#src/menu.cpp
 	#src/movement.cpp
@@ -73,10 +73,10 @@ set(kq-fork-sources
 	#src/selector.cpp
 	#src/setup.cpp
 	src/sgame.cpp
-	#src/shopmenu.cpp
+  #src/shopmenu.cpp
 	#src/timing.cpp
   src/unix.cpp
-	#src/tiledmap.cpp
+  #src/tiledmap.cpp
 )
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/maps")
